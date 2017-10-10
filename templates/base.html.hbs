@@ -1,0 +1,59 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Shot Log</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- FONT
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+
+        <!-- CSS
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.5.3/css/bulma.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <header>
+          <nav class="navbar is-success" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+              <a class="navbar-item" href="/">
+                <h3 class="title">Shot Log</h3>
+              </a>
+
+              <button class="button navbar-burger">
+                <span><a href="brands">Brands</a></span>
+                <span><a href="film_formats">Film Formats</a></span>
+                <span><a href="film_stocks">Film Stocks</a></span>
+              </button>
+            </div>
+            <div class="navbar-menu">
+              <div class="navbar-end">
+                <a class="navbar-item" href="brands">Brands</a>
+                <a class="navbar-item" href="film_formats">Film Formats</a>
+                <a class="navbar-item" href="film_stocks">Film Stocks</a>
+              </button>
+            </div>
+          </nav>
+        </header>
+
+        <section class="section">
+          <div class="container">
+            {{> layout}}
+          </div>
+        </section>
+
+        <!-- JS
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/turbolinks/5.0.3/turbolinks.js"></script>
+    </body>
+</html>
