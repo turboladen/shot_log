@@ -3,11 +3,12 @@
 
     <h1>{{name}}</h1>
     <ul>
-      {{#each items}}
-        <li>Box name: {{box_name}}</li>
-        <li>Box speed: {{box_speed}}</li>
-        <li>brand_id: {{brand_id}}</li>
-        <li>film_format_id: {{film_format_id}}</li>
+      {{#each film_stocks}}
+        <li>Box name: {{film_stock.box_name}}</li>
+        <li>Box speed: {{film_stock.box_speed}}</li>
+        <li>Brand id: {{brand.id}}</li>
+        <li>Brand Name: {{brand.name}}</li>
+        <li>film_format_id: {{film_stock.film_format_id}}</li>
       <hr>
       {{/each}}
     </ul>
