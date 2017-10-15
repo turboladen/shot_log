@@ -25,6 +25,7 @@ mod film_formats;
 mod film_stocks;
 
 use rocket_contrib::Template;
+use dotenv::dotenv;
 
 #[get("/", format="text/html")]
 fn index() -> Template {
@@ -32,6 +33,8 @@ fn index() -> Template {
 }
 
 fn main() {
+    dotenv().ok();
+
     let routes = routes![
         index,
         brands::index_json, brands::index_html,

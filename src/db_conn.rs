@@ -5,8 +5,6 @@ use std::ops::Deref;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
 use rocket::{Request, State, Outcome};
-// use diesel::prelude::*;
-use dotenv::dotenv;
 use std::env;
 
 // // An alias to the type for a pool of Diesel SQLite connections.
@@ -17,8 +15,6 @@ type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 // /// Initializes a database pool.
 pub fn init_pool() -> Pool {
-    dotenv().ok();
-
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
 
