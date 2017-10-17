@@ -1,5 +1,5 @@
 use uuid::Uuid;
-use schema::{brands, film_formats, film_stocks};
+use schema::{brands, film_formats, film_stocks, users};
 
 #[derive(Identifiable, Queryable, Serialize, Associations)]
 pub struct Brand {
@@ -24,4 +24,23 @@ pub struct FilmStock {
     pub box_speed: Option<i32>,
     pub brand_id: Uuid,
     pub film_format_id: Uuid
+}
+
+#[derive(Queryable, Serialize)]
+pub struct User {
+    pub id: Uuid,
+    pub email: String,
+}
+
+#[derive(FromForm, Debug)]
+pub struct NewUser {
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Insertable)]
+#[table_name="users"]
+pub struct UserToSave {
+    pub email: String,
+    pub password_hash: String,
 }

@@ -1,8 +1,8 @@
-use rocket_contrib::Json;
-use rocket_contrib::Template;
 use diesel::LoadDsl;
 use db_conn::DbConn;
 use models::*;
+use rocket_contrib::Json;
+use rocket_contrib::Template;
 use schema::*;
 
 #[derive(Serialize)]

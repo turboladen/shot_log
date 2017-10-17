@@ -1,3 +1,5 @@
+#![feature(custom_derive)]
+
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
 
@@ -13,6 +15,7 @@ extern crate r2d2_diesel;
 extern crate r2d2;
 
 extern crate uuid;
+extern crate argon2rs;
 
 #[macro_use] extern crate serde_derive;
 
@@ -23,6 +26,7 @@ mod db_conn;
 mod brands;
 mod film_formats;
 mod film_stocks;
+mod users;
 
 use rocket_contrib::Template;
 use dotenv::dotenv;
@@ -37,6 +41,7 @@ fn main() {
 
     let routes = routes![
         index,
+        users::new, users::create,
         brands::index_json, brands::index_html,
         film_formats::index_json, film_formats::index_html,
         film_stocks::index_json, film_stocks::index_html,
