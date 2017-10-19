@@ -1,6 +1,6 @@
 use diesel::LoadDsl;
 use db_conn::DbConn;
-use models::*;
+use models::Brand;
 use rocket_contrib::Json;
 use rocket_contrib::Template;
 use schema::*;

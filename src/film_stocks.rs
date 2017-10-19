@@ -2,7 +2,7 @@ use rocket_contrib::Json;
 use rocket_contrib::Template;
 use diesel::{JoinDsl, LoadDsl};
 use db_conn::DbConn;
-use models::*;
+use models::{Brand, FilmFormat, FilmStock};
 use schema::*;
 
 #[derive(Serialize)]
