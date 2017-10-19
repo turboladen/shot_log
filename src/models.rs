@@ -26,16 +26,18 @@ pub struct FilmStock {
     pub film_format_id: Uuid
 }
 
-#[derive(Queryable, Serialize)]
+#[derive(Identifiable, Queryable, Serialize)]
 pub struct User {
     pub id: Uuid,
     pub email: String,
+    pub password_hash: String,
 }
 
-#[derive(FromForm, Debug)]
+#[derive(FromForm)]
 pub struct NewUser {
     pub email: String,
     pub password: String,
+    pub password_confirmation: String,
 }
 
 #[derive(Insertable)]
