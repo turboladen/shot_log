@@ -34,6 +34,7 @@
                 <span><a href="brands">Brands</a></span>
                 <span><a href="film_formats">Film Formats</a></span>
                 <span><a href="film_stocks">Film Stocks</a></span>
+                <span><a href="login">Login</a></span>
               </button>
             </div>
             <div class="navbar-menu">
@@ -41,6 +42,11 @@
                 <a class="navbar-item" href="brands">Brands</a>
                 <a class="navbar-item" href="film_formats">Film Formats</a>
                 <a class="navbar-item" href="film_stocks">Film Stocks</a>
+                {{ #if email }}
+                <a class="navbar-item" href="">{{email}}</a>
+                {{ else }}
+                <a class="navbar-item" href="login">Login</a>
+                {{ /if }}
               </button>
             </div>
           </nav>

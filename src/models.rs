@@ -40,6 +40,12 @@ pub struct NewUser {
     pub password_confirmation: String,
 }
 
+#[derive(FromForm)]
+pub struct LoginUser {
+    pub email: String,
+    pub password: String,
+}
+
 #[derive(Insertable)]
 #[table_name="users"]
 pub struct UserToSave {

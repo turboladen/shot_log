@@ -34,21 +34,17 @@ mod db_conn;
 mod brands;
 mod film_formats;
 mod film_stocks;
+mod home;
 mod users;
 
-use rocket_contrib::Template;
 use dotenv::dotenv;
-
-#[get("/", format="text/html")]
-fn index() -> Template {
-    Template::render("home", "")
-}
+use rocket_contrib::Template;
 
 fn main() {
     dotenv().ok();
 
     let routes = routes![
-        index,
+        home::index, home::index_no_user, home::login_form, home::do_login,
         users::new, users::create,
         brands::index_json, brands::index_html,
         film_formats::index_json, film_formats::index_html,
