@@ -9,8 +9,16 @@ extern crate rocket;
 extern crate rocket_contrib;
 extern crate dotenv;
 
-#[macro_use] extern crate diesel;
-#[macro_use] extern crate diesel_codegen;
+#[macro_use]
+extern crate diesel;
+
+#[macro_use]
+extern crate diesel_codegen;
+
+#[macro_use]
+extern crate log;
+
+extern crate env_logger;
 extern crate r2d2_diesel;
 extern crate r2d2;
 
