@@ -2,11 +2,12 @@ use rocket_contrib::Json;
 use rocket_contrib::Template;
 use diesel::{JoinDsl, LoadDsl};
 use db_conn::DbConn;
-use models::{Brand, FilmFormat, FilmStock};
+use models::{Brand, CurrentUser, FilmFormat, FilmStock};
 use schema::*;
 
 #[derive(Serialize)]
 struct TemplateContext {
+    current_user: CurrentUser,
     name: String,
     film_stocks: Vec<FullFilmStock>
 }
@@ -27,7 +28,7 @@ fn index_json(conn: DbConn) -> Json<Vec<FilmStock>> {
 }
 
 #[get("/film_stocks", format = "text/html")]
-fn index_html(conn: DbConn) -> Template {
+fn index_html(current_user: CurrentUser, conn: DbConn) -> Template {
     let fsb_vec = film_stocks::table
         .inner_join(brands::table)
         .load::<(FilmStock, Brand)>(&*conn)
@@ -48,6 +49,7 @@ fn index_html(conn: DbConn) -> Template {
         .collect();
 
     let context = TemplateContext {
+        current_user: current_user,
         name: "Film Stocks".to_string(),
         film_stocks: full_stocks,
     };

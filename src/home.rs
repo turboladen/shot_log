@@ -1,6 +1,5 @@
 use db_conn::DbConn;
-use diesel::FindDsl;
-use models::{User, LoginUser};
+use models::{CurrentUser, User, LoginUser};
 use diesel::*;
 use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
@@ -10,30 +9,13 @@ use uuid::Uuid;
 
 #[derive(Serialize)]
 struct TemplateContext {
-    email: String,
+    current_user: CurrentUser,
 }
 
 #[get("/", format="text/html")]
-fn index(conn: DbConn, mut cookies: Cookies) -> Template {
-    match cookies.get_private("user_id") {
-        Some(user_id_cookie) => {
-            info!("Got a cookie");
-            let user_id = Uuid::parse_str(user_id_cookie.value()).expect("Couldn't parse UUID");
-
-            match users.find(user_id).first::<User>(&*conn) {
-                Ok(user) => {
-                    info!("Got a user from the cookie");
-                    let context = TemplateContext { email: user.email };
-                    Template::render("home", context)
-                },
-                Err(_) => Template::render("home", ""),
-            }
-        },
-        None => {
-            info!("No cookie in cookies");
-            Template::render("home", "")
-        },
-    }
+fn index(current_user: CurrentUser) -> Template {
+    let context = TemplateContext { current_user: current_user };
+    Template::render("home", context)
 }
 
 #[get("/", format="text/html", rank = 2)]
@@ -61,16 +43,19 @@ fn do_login(conn: DbConn, mut cookies: Cookies, login_form: Form<LoginUser>) -> 
                 info!("password matched");
                 cookies.add_private(Cookie::new("user_id", user.id.to_string()));
 
-                let context = TemplateContext { email: user.email };
+                let current_user = CurrentUser { id: user.id, email: user.email };
+                let context = TemplateContext { current_user: current_user };
                 Template::render("home", context)
             } else {
                 info!("bad password");
-                let context = TemplateContext { email: "bad pass".to_string() };
+                let current_user = CurrentUser { id: user.id, email: "bad pass".to_string() };
+                let context = TemplateContext { current_user: current_user };
                 Template::render("home", context)
             }
         },
         Err(_) => {
-            let context = TemplateContext { email: "No user".to_string() };
+            let current_user = CurrentUser { id: Uuid::new_v4(), email: "No user".to_string() };
+            let context = TemplateContext { current_user: current_user };
             Template::render("home", context)
         }
     }

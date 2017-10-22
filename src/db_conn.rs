@@ -7,7 +7,7 @@ use rocket::request::{self, FromRequest};
 use rocket::{Request, State, Outcome};
 
 // // An alias to the type for a pool of Diesel SQLite connections.
-type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
+pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 // // The URL to the database, set via the `DATABASE_URL` environment variable.
 static DATABASE_URL: &'static str = env!("DATABASE_URL");
