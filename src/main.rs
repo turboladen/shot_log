@@ -35,6 +35,7 @@ mod brands;
 mod film_formats;
 mod film_stocks;
 mod home;
+mod sessions;
 mod users;
 
 use dotenv::dotenv;
@@ -44,7 +45,8 @@ fn main() {
     dotenv().ok();
 
     let routes = routes![
-        home::index, home::index_no_user, home::login_form, home::do_login,
+        home::index, home::index_no_user,
+        sessions::login_form, sessions::do_login,
         users::new, users::create,
         brands::index_json, brands::index_html,
         film_formats::index_json, film_formats::index_html,
