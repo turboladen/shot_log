@@ -1,11 +1,11 @@
 use argon2rs::argon2d_simple;
 use db_conn::DbConn;
 use diesel::LoadDsl;
-use models::{User, NewUser, UserToSave};
+use models::user::{User, NewUser, UserToSave};
 use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
 use rocket_contrib::Template;
-use schema::*;
+use schema::users;
 
 #[derive(Serialize)]
 struct TemplateContext {

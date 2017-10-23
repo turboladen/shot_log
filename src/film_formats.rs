@@ -2,8 +2,9 @@ use rocket_contrib::Json;
 use rocket_contrib::Template;
 use diesel::LoadDsl;
 use db_conn::DbConn;
-use models::{CurrentUser, FilmFormat};
-use schema::*;
+use models::film_format::FilmFormat;
+use models::user::CurrentUser;
+use schema::film_formats;
 
 #[derive(Serialize)]
 struct TemplateContext {

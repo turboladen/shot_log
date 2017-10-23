@@ -1,9 +1,10 @@
 use diesel::LoadDsl;
 use db_conn::DbConn;
-use models::{Brand, CurrentUser};
+use models::brand::Brand;
+use models::user::CurrentUser;
 use rocket_contrib::Json;
 use rocket_contrib::Template;
-use schema::*;
+use schema::brands;
 
 #[derive(Serialize)]
 struct TemplateContext {

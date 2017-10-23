@@ -1,5 +1,5 @@
 use db_conn::DbConn;
-use models::{CurrentUser, User, LoginUser};
+use models::user::{CurrentUser, User, LoginUser};
 use diesel::*;
 use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
