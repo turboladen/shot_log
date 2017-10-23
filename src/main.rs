@@ -46,7 +46,7 @@ fn main() {
 
     let routes = routes![
         home::index, home::index_no_user,
-        sessions::login_form, sessions::do_login,
+        sessions::login_form, sessions::do_login, sessions::logout,
         users::new, users::create,
         brands::index_json, brands::index_html,
         film_formats::index_json, film_formats::index_html,

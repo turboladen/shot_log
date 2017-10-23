@@ -3,6 +3,7 @@ use diesel::*;
 use models::user::{CurrentUser, User, LoginUser};
 use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
+use rocket::response::Redirect;
 use rocket_contrib::Template;
 use schema::users::table as users;
 use uuid::Uuid;
@@ -47,4 +48,11 @@ fn do_login(conn: DbConn, mut cookies: Cookies, login_form: Form<LoginUser>) -> 
             Template::render("home", context)
         }
     }
+}
+
+#[delete("/logout")]
+fn logout(_current_user: CurrentUser, mut cookies: Cookies) -> Redirect {
+    cookies.remove_private(Cookie::named("user_id"));
+
+    Redirect::to("/")
 }
