@@ -1,0 +1,40 @@
+<nav class="navbar is-success" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <h1 class="title has-text-white-bis">Shot Log</h3>
+    </a>
+
+    <button class="button navbar-burger">
+      <span><a href="/brands">Brands</a></span>
+      <span><a href="/film_formats">Film Formats</a></span>
+      <span><a href="/film_stocks">Film Stocks</a></span>
+      <span><a href="/login">Login</a></span>
+    </button>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-end">
+      <a class="navbar-item" href="/brands">Brands</a>
+      <a class="navbar-item" href="/film_formats">Film Formats</a>
+      <a class="navbar-item" href="/film_stocks">Film Stocks</a>
+      {{ #if current_user }}
+      <span class="navbar-item">{{current_user.email}}</span>
+
+      <form class="inline navbar-item" action="/logout" method="post">
+        <input type="hidden" name="_method" value="delete" />
+        <div class="field">
+          <div class="control">
+            <button class="button is-danger is-small" type="submit">
+              <span class="icon is-small">
+                <i class="fa fa-sign-out"></i>
+              </span>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </form>
+      {{ else }}
+      <a class="navbar-item" href="/login">Login</a>
+      {{ /if }}
+      </button>
+    </div>
+</nav>

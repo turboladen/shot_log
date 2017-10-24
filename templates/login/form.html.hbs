@@ -1,29 +1,50 @@
 {{#> base }}
-  {{#*inline "layout"}}
-    <form action="/login" method="post">
-      <div class="field">
-        <label class="label">Email</label>
-        <div class="control has-icons-left has-icons-right">
-          <input class="input" type="email" placeholder="Email input" name="email">
-          <span class="icon is-small is-left">
-            <i class="fa fa-envelope"></i>
-          </span>
-          <span class="icon is-small is-right">
-            <i class="fa fa-warning"></i>
-          </span>
+  {{#*inline "hero-block"}}
+    <section class="section hero is-success is-fullheight">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <div class="column is-4 is-offset-4">
+            <h3 class="title has-text-grey">Login</h3>
+            <p class="subtitle has-text-grey">Please login to proceed.</p>
+
+            <div class="box">
+              <figure class="avatar">
+                <img src="https://placehold.it/128x128">
+              </figure>
+              <form action="/login" method="post">
+                <div class="field">
+                  <label class="label">Email</label>
+                  <div class="control has-icons-left has-icons-right">
+                    <input class="input" type="email" placeholder="Email input" name="email" autofocus="">
+                    <span class="icon is-small is-left">
+                      <i class="fa fa-envelope"></i>
+                    </span>
+                    <span class="icon is-small is-right">
+                      <i class="fa fa-warning"></i>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <p class="control has-icons-left">
+                  <input class="input" type="password" placeholder="Password" name="password">
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                  </p>
+                </div>
+
+                <input type="submit" class="button is-block is-info is-large" value="Login">
+              </form>
+            </div>
+            <p class="has-text-grey">
+            <a href="/users/new">Sign Up</a> &nbsp;·&nbsp;
+            <a href="../">Forgot Password</a> &nbsp;·&nbsp;
+            <a href="../">Need Help?</a>
+            </p>
+          </div>
         </div>
       </div>
-
-      <div class="field">
-        <p class="control has-icons-left">
-        <input class="input" type="password" placeholder="Password" name="password">
-          <span class="icon is-small is-left">
-            <i class="fa fa-lock"></i>
-          </span>
-        </p>
-      </div>
-
-      <input type="submit" class="button is-block is-info is-large" value="Login">
-    </form>
+    </section>
   {{/inline}}
 {{/base}}

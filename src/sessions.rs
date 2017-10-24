@@ -25,18 +25,15 @@ fn do_login(conn: DbConn, mut cookies: Cookies, login_form: Form<LoginUser>) -> 
 
     match users.filter(email.eq(&form.email)).first::<User>(&*conn) {
         Ok(user) => {
-            info!("User matched");
             let hashed_password = ::users::password_to_hash(&form.password);
 
             if user.password_hash == hashed_password {
-                info!("password matched");
                 cookies.add_private(Cookie::new("user_id", user.id.to_string()));
 
                 let current_user = CurrentUser { id: user.id, email: user.email };
                 let context = TemplateContext { current_user: current_user };
                 Template::render("home", context)
             } else {
-                info!("bad password");
                 let current_user = CurrentUser { id: user.id, email: "bad pass".to_string() };
                 let context = TemplateContext { current_user: current_user };
                 Template::render("home", context)
