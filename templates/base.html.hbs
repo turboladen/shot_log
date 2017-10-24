@@ -31,19 +31,19 @@
               </a>
 
               <button class="button navbar-burger">
-                <span><a href="brands">Brands</a></span>
-                <span><a href="film_formats">Film Formats</a></span>
-                <span><a href="film_stocks">Film Stocks</a></span>
-                <span><a href="login">Login</a></span>
+                <span><a href="/brands">Brands</a></span>
+                <span><a href="/film_formats">Film Formats</a></span>
+                <span><a href="/film_stocks">Film Stocks</a></span>
+                <span><a href="/login">Login</a></span>
               </button>
             </div>
             <div class="navbar-menu">
               <div class="navbar-end">
-                <a class="navbar-item" href="brands">Brands</a>
-                <a class="navbar-item" href="film_formats">Film Formats</a>
-                <a class="navbar-item" href="film_stocks">Film Stocks</a>
+                <a class="navbar-item" href="/brands">Brands</a>
+                <a class="navbar-item" href="/film_formats">Film Formats</a>
+                <a class="navbar-item" href="/film_stocks">Film Stocks</a>
                 {{ #if current_user }}
-                  <span class="navbar-item" href="">{{current_user.email}}</span>
+                  <span class="navbar-item">{{current_user.email}}</span>
 
                   <form class="inline navbar-item" action="/logout" method="post">
                     <input type="hidden" name="_method" value="delete" />
@@ -59,7 +59,7 @@
                     </div>
                   </form>
                 {{ else }}
-                  <a class="navbar-item" href="login">Login</a>
+                  <a class="navbar-item" href="/login">Login</a>
                 {{ /if }}
               </button>
             </div>
@@ -68,6 +68,13 @@
 
         <section class="section">
           <div class="container">
+            {{ #if flash }}
+              <div class="notification is-primary">
+                <button class="delete"></button>
+                {{ flash }}
+              </div>
+            {{ /if }}
+
             {{> layout}}
           </div>
         </section>

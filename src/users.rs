@@ -3,23 +3,37 @@ use db_conn::DbConn;
 use diesel::LoadDsl;
 use models::user::{User, NewUser, UserToSave};
 use rocket::http::{Cookie, Cookies};
-use rocket::request::Form;
+use rocket::request::{FlashMessage, Form};
+use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
 use schema::users;
 
 #[derive(Serialize)]
-struct TemplateContext {
-    email: String,
+struct TemplateContext<'a> {
+    flash: &'a str,
 }
 
 #[get("/users/new")]
-fn new() -> Template {
-    Template::render("users/form", ())
+fn new(flash: Option<FlashMessage>) -> Template {
+    match flash {
+        Some(msg) => {
+            let context = TemplateContext { flash: msg.msg() };
+            Template::render("users/form", context)
+        },
+        None => Template::render("users/form", ())
+    }
 }
 
 #[post("/users", data = "<user_form>")]
-fn create(conn: DbConn, mut cookies: Cookies, user_form: Form<NewUser>) -> Template {
+fn create(conn: DbConn, mut cookies: Cookies, user_form: Form<NewUser>) -> Result<Flash<Redirect>, Flash<Redirect>> {
     let u = user_form.get();
+
+    if &u.password != &u.password_confirmation {
+        info!("shoes");
+        return Err(Flash::error(Redirect::to("/users/new"), "Passwords don't match"))
+    }
+    info!("pants");
+
     let hashed_password = password_to_hash(&u.password);
 
     let user = UserToSave {
@@ -33,11 +47,7 @@ fn create(conn: DbConn, mut cookies: Cookies, user_form: Form<NewUser>) -> Templ
 
     cookies.add_private(Cookie::new("user_id", user.id.to_string()));
 
-    let context = TemplateContext {
-        email: user.email,
-    };
-
-    Template::render("users/welcome", context)
+    Ok(Flash::success(Redirect::to("/"), format!("Welcome, {}", user.email)))
 }
 
 pub fn password_to_hash(password: &str) -> String {
