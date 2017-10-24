@@ -1,6 +1,6 @@
-{{ #if flash }}
-<div class="notification is-primary">
-  <button class="delete"></button>
-  {{ flash }}
-</div>
+{{ #if flash_message }}
+<div class="notification is-{{#if flash_type}}{{ flash_type }} {{else}}"primary"{{/if}}">
+    <button class="delete"></button>
+    {{ flash_message }}
+  </div>
 {{ /if }}
