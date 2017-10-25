@@ -9,15 +9,16 @@ use rocket_contrib::Template;
 use schema::users;
 
 #[derive(Serialize)]
-struct TemplateContext<'a> {
-    flash: &'a str,
+struct FlashContext<'a> {
+    flash_message: &'a str,
+    flash_type: &'a str,
 }
 
 #[get("/users/new")]
 fn new(flash: Option<FlashMessage>) -> Template {
     match flash {
         Some(msg) => {
-            let context = TemplateContext { flash: msg.msg() };
+            let context = FlashContext { flash_message: msg.msg(), flash_type: "danger" };
             Template::render("users/form", context)
         },
         None => Template::render("users/form", ())
@@ -29,10 +30,8 @@ fn create(conn: DbConn, mut cookies: Cookies, user_form: Form<NewUser>) -> Resul
     let u = user_form.get();
 
     if &u.password != &u.password_confirmation {
-        info!("shoes");
         return Err(Flash::error(Redirect::to("/users/new"), "Passwords don't match"))
     }
-    info!("pants");
 
     let hashed_password = password_to_hash(&u.password);
 
