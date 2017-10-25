@@ -1,3 +1,5 @@
+use chrono::DateTime;
+use chrono::offset::Utc;
 use uuid::Uuid;
 use schema::users;
 
@@ -6,6 +8,8 @@ pub struct User {
     pub id: Uuid,
     pub email: String,
     pub password_hash: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Identifiable, Queryable, Serialize)]
@@ -13,6 +17,8 @@ pub struct User {
 pub struct CurrentUser {
     pub id: Uuid,
     pub email: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
 use rocket::{State, Outcome};
@@ -44,7 +50,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {
 
                 match users.find(user_id).first::<User>(&*conn) {
                     Ok(user) => {
-                        let u = CurrentUser { id: user.id, email: user.email };
+                        let u = CurrentUser {
+                            id: user.id,
+                            email: user.email,
+                            created_at: user.created_at,
+                            updated_at: user.updated_at
+                        };
                         Outcome::Success(u)
                     },
                     Err(_) => Outcome::Forward(())
