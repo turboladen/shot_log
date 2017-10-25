@@ -1,3 +1,5 @@
+use chrono::DateTime;
+use chrono::offset::Utc;
 use uuid::Uuid;
 use schema::film_formats;
 
@@ -7,4 +9,6 @@ pub struct FilmFormat {
     pub designation: String,
     pub stock_size_value: Option<f64>,
     pub stock_size_unit: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
