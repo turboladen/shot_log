@@ -33,6 +33,10 @@ fn create(conn: DbConn, mut cookies: Cookies, user_form: Form<NewUser>) -> Resul
         return Err(Flash::error(Redirect::to("/users/new"), "Passwords don't match"))
     }
 
+    if u.password.len() < 8 {
+        return Err(Flash::error(Redirect::to("/users/new"), "Passwords must be >= 8 characters"))
+    }
+
     let hashed_password = password_to_hash(&u.password);
 
     let user = UserToSave {
