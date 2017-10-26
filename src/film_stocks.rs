@@ -8,9 +8,9 @@ use models::user::CurrentUser;
 use schema::{brands, film_formats, film_stocks};
 
 #[derive(Serialize)]
-struct TemplateContext {
+struct TemplateContext<'a> {
     current_user: CurrentUser,
-    name: String,
+    name: &'a str,
     film_stocks: Vec<FullFilmStock>
 }
 
@@ -44,7 +44,7 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 
     let context = TemplateContext {
         current_user: current_user,
-        name: "Film Stocks".to_string(),
+        name: "Film Stocks",
         film_stocks: full_stocks,
     };
 

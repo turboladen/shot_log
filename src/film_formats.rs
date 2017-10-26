@@ -6,9 +6,9 @@ use models::user::CurrentUser;
 use schema::film_formats;
 
 #[derive(Serialize)]
-struct TemplateContext {
+struct TemplateContext<'a> {
     current_user: CurrentUser,
-    name: String,
+    name: &'a str,
     items: Vec<FilmFormat>
 }
 
@@ -19,7 +19,7 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 
     let context = TemplateContext {
         current_user: current_user,
-        name: "Film Formats".to_string(),
+        name: "Film Formats",
         items: formats,
     };
 
