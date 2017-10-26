@@ -33,6 +33,7 @@ mod brands;
 mod film_formats;
 mod film_stocks;
 mod home;
+mod lenses;
 mod sessions;
 mod users;
 
@@ -49,6 +50,7 @@ fn main() {
         brands::index,
         film_formats::index,
         film_stocks::index,
+        lenses::index,
     ];
 
     rocket::ignite()
