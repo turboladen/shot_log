@@ -1,4 +1,3 @@
-use rocket_contrib::Json;
 use rocket_contrib::Template;
 use diesel::{JoinDsl, LoadDsl};
 use db_conn::DbConn;
@@ -22,16 +21,8 @@ struct FullFilmStock {
     film_format: FilmFormat,
 }
 
-#[get("/film_stocks", format = "application/json")]
-fn index_json(conn: DbConn) -> Json<Vec<FilmStock>> {
-    let stocks_result = film_stocks::table.load::<FilmStock>(&*conn);
-    let stocks = stocks_result.expect("Error loading film_stocks");
-
-    Json(stocks)
-}
-
 #[get("/film_stocks", format = "text/html")]
-fn index_html(current_user: CurrentUser, conn: DbConn) -> Template {
+fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let fsb_vec = film_stocks::table
         .inner_join(brands::table)
         .load::<(FilmStock, Brand)>(&*conn)

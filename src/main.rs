@@ -46,9 +46,9 @@ fn main() {
         home::index, home::index_no_user,
         sessions::login_form, sessions::do_login, sessions::logout,
         users::new, users::create,
-        brands::index_json, brands::index_html,
-        film_formats::index_json, film_formats::index_html,
-        film_stocks::index_json, film_stocks::index_html,
+        brands::index,
+        film_formats::index,
+        film_stocks::index,
     ];
 
     rocket::ignite()
