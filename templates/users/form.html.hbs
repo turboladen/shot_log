@@ -1,5 +1,5 @@
-{{#> base }}
-  {{#*inline "layout"}}
+{{#> layout/base title="New User"}}
+  {{#*inline "container-layout"}}
     <form action="/users" method="post">
       <div class="field">
         <label class="label">Email</label>
@@ -35,4 +35,4 @@
       <input type="submit" class="button is-block is-info is-large" value="create">
     </form>
   {{/inline}}
-{{/base}}
+{{/layout/base}}

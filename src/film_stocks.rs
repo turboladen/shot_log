@@ -1,17 +1,16 @@
-use rocket_contrib::Json;
 use rocket_contrib::Template;
 use diesel::{JoinDsl, LoadDsl};
 use db_conn::DbConn;
-use models::brand::Brand;
-use models::film_format::FilmFormat;
-use models::film_stock::FilmStock;
-use models::user::CurrentUser;
+use models::brands::Brand;
+use models::film_formats::FilmFormat;
+use models::film_stocks::FilmStock;
+use models::users::CurrentUser;
 use schema::{brands, film_formats, film_stocks};
 
 #[derive(Serialize)]
-struct TemplateContext {
+struct TemplateContext<'a> {
     current_user: CurrentUser,
-    name: String,
+    name: &'a str,
     film_stocks: Vec<FullFilmStock>
 }
 
@@ -22,16 +21,8 @@ struct FullFilmStock {
     film_format: FilmFormat,
 }
 
-#[get("/film_stocks", format = "application/json")]
-fn index_json(conn: DbConn) -> Json<Vec<FilmStock>> {
-    let stocks_result = film_stocks::table.load::<FilmStock>(&*conn);
-    let stocks = stocks_result.expect("Error loading film_stocks");
-
-    Json(stocks)
-}
-
 #[get("/film_stocks", format = "text/html")]
-fn index_html(current_user: CurrentUser, conn: DbConn) -> Template {
+fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let fsb_vec = film_stocks::table
         .inner_join(brands::table)
         .load::<(FilmStock, Brand)>(&*conn)
@@ -53,7 +44,7 @@ fn index_html(current_user: CurrentUser, conn: DbConn) -> Template {
 
     let context = TemplateContext {
         current_user: current_user,
-        name: "Film Stocks".to_string(),
+        name: "Film Stocks",
         film_stocks: full_stocks,
     };
 

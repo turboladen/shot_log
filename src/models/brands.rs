@@ -1,3 +1,5 @@
+use chrono::DateTime;
+use chrono::offset::Utc;
 use uuid::Uuid;
 use schema::brands;
 
@@ -5,5 +7,6 @@ use schema::brands;
 pub struct Brand {
     pub id: Uuid,
     pub name: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
-

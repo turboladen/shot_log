@@ -1,31 +1,25 @@
 use diesel::LoadDsl;
 use db_conn::DbConn;
-use models::brand::Brand;
-use models::user::CurrentUser;
-use rocket_contrib::Json;
+use models::brands::Brand;
+use models::users::CurrentUser;
 use rocket_contrib::Template;
 use schema::brands;
 
 #[derive(Serialize)]
-struct TemplateContext {
+struct TemplateContext<'a> {
     current_user: CurrentUser,
-    name: String,
+    name: &'a str,
     items: Vec<Brand>
 }
 
-#[get("/brands", format = "application/json")]
-fn index_json(conn: DbConn) -> Json<Vec<Brand>> {
-    Json(brands::table.load::<Brand>(&*conn).unwrap())
-}
-
 #[get("/brands", format = "text/html")]
-fn index_html(current_user: CurrentUser, conn: DbConn) -> Template {
+fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let result = brands::table.load::<Brand>(&*conn);
     let brands = result.expect("Error loading brands");
 
     let context = TemplateContext {
         current_user: current_user,
-        name: "Brands".to_string(),
+        name: "Brands",
         items: brands,
     };
 

@@ -1,0 +1,73 @@
+<nav class="navbar is-success" role="navigation" aria-label="main navigation">
+  <div class="container">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <h1 class="title has-text-white-bis">Shot Log</h3>
+      </a>
+
+      <button class="button navbar-burger">
+        {{ #if current_user }}
+          <span><a href="/brands">Brands</a></span>
+          <span><a href="/film_formats">Film Formats</a></span>
+          <span><a href="/film_stocks">Film Stocks</a></span>
+          <span><a href="/lenses">Lenses</a></span>
+        {{ else }}
+          <span><a href="/login">Login</a></span>
+        {{ /if }}
+      </button>
+    </div>
+
+    <div class="navbar-menu">
+      <div class="navbar-end">
+        {{ #if current_user }}
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            Basic Data
+          </a>
+
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="/brands">Brands</a>
+            <a class="navbar-item" href="/film_formats">Film Formats</a>
+            <a class="navbar-item" href="/film_stocks">Film Stocks</a>
+            <a class="navbar-item" href="/lenses">Lenses</a>
+          </div>
+        </div>
+
+        <span class="navbar-item">{{current_user.email}}</span>
+        <form class="inline navbar-item" action="/logout" method="post">
+          <input type="hidden" name="_method" value="delete" />
+          <div class="field">
+            <div class="control">
+              <button class="button is-danger is-small" type="submit">
+                <span class="icon is-small">
+                  <i class="fa fa-sign-out"></i>
+                </span>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </form>
+        {{ else }}
+          <div class="navbar-item">
+            <a class="button is-link is-small" href="/users/new">
+              <span class="icon is-small">
+                <i class="fa fa-camera-retro"></i>
+              </span>
+              <span>Sign Up</span>
+            </a>
+          </div>
+
+          <div class="navbar-item">
+            <a class="button is-link is-small" href="/login">
+              <span class="icon is-small">
+                <i class="fa fa-sign-in"></i>
+              </span>
+              <span>Login</span>
+            </a>
+          </div>
+        {{ /if }}
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

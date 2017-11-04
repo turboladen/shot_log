@@ -5,25 +5,23 @@
 
 #![feature(const_fn)]
 
-extern crate rocket;
-extern crate rocket_contrib;
-extern crate dotenv;
+#![recursion_limit="256"]
 
+extern crate argon2rs;
+extern crate chrono;
 #[macro_use]
 extern crate diesel;
-
 #[macro_use]
 extern crate diesel_codegen;
-
+extern crate dotenv;
+extern crate env_logger;
 #[macro_use]
 extern crate log;
-
-extern crate env_logger;
 extern crate r2d2_diesel;
 extern crate r2d2;
-
+extern crate rocket;
+extern crate rocket_contrib;
 extern crate uuid;
-extern crate argon2rs;
 
 #[macro_use] extern crate serde_derive;
 
@@ -35,6 +33,7 @@ mod brands;
 mod film_formats;
 mod film_stocks;
 mod home;
+mod lenses;
 mod sessions;
 mod users;
 
@@ -48,9 +47,10 @@ fn main() {
         home::index, home::index_no_user,
         sessions::login_form, sessions::do_login, sessions::logout,
         users::new, users::create,
-        brands::index_json, brands::index_html,
-        film_formats::index_json, film_formats::index_html,
-        film_stocks::index_json, film_stocks::index_html,
+        brands::index,
+        film_formats::index,
+        film_stocks::index,
+        lenses::index,
     ];
 
     rocket::ignite()

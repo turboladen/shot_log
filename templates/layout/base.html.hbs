@@ -1,0 +1,53 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>
+      {{ #if title }}
+      Shot Log | {{ title }}
+      {{ else }}
+      Shot Log
+      {{ /if }}
+    </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT
+      –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+      <!-- CSS
+        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css"  integrity="sha256-HEtF7HLJZSC3Le1HcsWbz1hDYFPZCqDhZa9QsCgVUdw=" crossorigin="anonymous" >
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+
+  </head>
+        <body>
+          <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+          <![endif]-->
+
+          <!-- Add your site or application content here -->
+          <header>
+            {{> layout/navbar }}
+          </header>
+
+          {{#> hero-block}}
+            {{!-- Hero content goes here. --}}
+          {{/hero-block}}
+
+          {{#> container-block}}
+            <section class="section">
+              <div class="container">
+                {{> layout/flash }}
+
+                {{> container-layout}}
+              </div>
+            </section>
+          {{/container-block}}
+
+          <!-- JS
+            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+          <script async src="//cdnjs.cloudflare.com/ajax/libs/turbolinks/5.0.3/turbolinks.js"></script>
+        </body>
+</html>
