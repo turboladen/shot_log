@@ -1,6 +1,6 @@
 use chrono::DateTime;
 use chrono::offset::Utc;
-use models::brand::Brand;
+use models::brands::Brand;
 use uuid::Uuid;
 use schema::lenses;
 

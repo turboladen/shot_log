@@ -1,10 +1,10 @@
 use rocket_contrib::Template;
 use diesel::{JoinDsl, LoadDsl};
 use db_conn::DbConn;
-use models::brand::Brand;
-use models::film_format::FilmFormat;
-use models::film_stock::FilmStock;
-use models::user::CurrentUser;
+use models::brands::Brand;
+use models::film_formats::FilmFormat;
+use models::film_stocks::FilmStock;
+use models::users::CurrentUser;
 use schema::{brands, film_formats, film_stocks};
 
 #[derive(Serialize)]

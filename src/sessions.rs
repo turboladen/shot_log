@@ -1,6 +1,6 @@
 use db_conn::DbConn;
 use diesel::*;
-use models::user::{CurrentUser, User, LoginUser};
+use models::users::{CurrentUser, User, LoginUser};
 use rocket::http::{Cookie, Cookies};
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};

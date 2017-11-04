@@ -1,9 +1,9 @@
 use rocket_contrib::Template;
 use diesel::{JoinDsl, LoadDsl};
 use db_conn::DbConn;
-use models::brand::Brand;
-use models::lens::Lens;
-use models::user::CurrentUser;
+use models::brands::Brand;
+use models::lenses::Lens;
+use models::users::CurrentUser;
 use schema::{brands, lenses};
 
 #[derive(Serialize)]

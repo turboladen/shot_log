@@ -1,7 +1,7 @@
 use diesel::LoadDsl;
 use db_conn::DbConn;
-use models::brand::Brand;
-use models::user::CurrentUser;
+use models::brands::Brand;
+use models::users::CurrentUser;
 use rocket_contrib::Template;
 use schema::brands;
 

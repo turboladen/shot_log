@@ -1,7 +1,7 @@
 use chrono::DateTime;
 use chrono::offset::Utc;
-use models::brand::Brand;
-use models::film_format::FilmFormat;
+use models::brands::Brand;
+use models::film_formats::FilmFormat;
 use schema::film_stocks;
 use uuid::Uuid;
 

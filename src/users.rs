@@ -1,7 +1,7 @@
 use argon2rs::argon2d_simple;
 use db_conn::DbConn;
 use diesel::LoadDsl;
-use models::user::{User, NewUser, UserToSave};
+use models::users::{User, NewUser, UserToSave};
 use rocket::http::{Cookie, Cookies};
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};

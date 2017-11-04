@@ -1,4 +1,4 @@
-use models::user::CurrentUser;
+use models::users::CurrentUser;
 use rocket::request::FlashMessage;
 use rocket_contrib::Template;
 
