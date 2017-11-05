@@ -30,6 +30,7 @@ pub mod models;
 mod db_conn;
 
 mod brands;
+mod cameras;
 mod film_formats;
 mod film_stocks;
 mod home;
@@ -48,6 +49,7 @@ fn main() {
         sessions::login_form, sessions::do_login, sessions::logout,
         users::new, users::create,
         brands::index,
+        cameras::index,
         film_formats::index,
         film_stocks::index,
         lenses::index,
