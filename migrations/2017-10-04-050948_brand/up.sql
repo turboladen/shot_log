@@ -18,8 +18,10 @@ VALUES ('Kodak'),
   ('Rollei'),
   ('Ilford'),
   ('Minolta'),
+  ('Nikon'),
   ('Olympus'),
   ('Pentax'),
   ('Yashica'),
-  ('Meopta')
+  ('Meopta'),
+  ('Zorki')
   ;

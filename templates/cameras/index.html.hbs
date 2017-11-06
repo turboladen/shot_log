@@ -1,0 +1,15 @@
+{{#> layout/base title="Cameras"}}
+  {{#*inline "container-layout"}}
+
+    <h1 class="title">{{name}}</h1>
+    <ul>
+      {{#each cameras}}
+        <li>Camera id: {{camera.id}}</li>
+        <li>Brand Name: {{brand.name}}</li>
+        <li>Model: {{camera.model}}</li>
+      <hr>
+      {{/each}}
+    </ul>
+
+  {{/inline}}
+{{/layout/base}}

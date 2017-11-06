@@ -1,8 +1,8 @@
-use rocket_contrib::Template;
 use diesel::LoadDsl;
 use db_conn::DbConn;
 use models::film_formats::FilmFormat;
 use models::users::CurrentUser;
+use rocket_contrib::Template;
 use schema::film_formats;
 
 #[derive(Serialize)]
