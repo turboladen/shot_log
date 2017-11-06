@@ -40,13 +40,18 @@ mod users;
 
 use dotenv::dotenv;
 use rocket_contrib::Template;
+use rocket::Rocket;
 
 fn main() {
+    rocket().launch();
+}
+
+fn rocket() -> Rocket {
     dotenv().ok();
 
     let routes = routes![
         home::index, home::index_no_user,
-        sessions::login_form, sessions::do_login, sessions::logout,
+        sessions::login_form, sessions::login, sessions::logout,
         users::new, users::create,
         brands::index,
         cameras::index,
@@ -59,5 +64,4 @@ fn main() {
         .manage(db_conn::init_pool())
         .attach(Template::fairing())
         .mount("/", routes)
-        .launch();
 }
