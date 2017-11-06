@@ -58,7 +58,7 @@ mod tests {
     use rocket::http::ContentType;
     use rocket::http::Status;
     use rocket::local::Client;
-    use super::super::users::test::build_test_user;
+    use super::super::models::users::test::build_test_user;
 
     #[test]
     fn test_login_good() {
