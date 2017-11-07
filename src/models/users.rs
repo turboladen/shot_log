@@ -12,7 +12,7 @@ pub struct User {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Identifiable, Queryable, Serialize)]
+#[derive(Identifiable, Queryable, Serialize, Hash)]
 #[table_name="users"]
 pub struct CurrentUser {
     pub id: Uuid,
