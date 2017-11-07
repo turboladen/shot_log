@@ -53,7 +53,7 @@ fn rocket() -> Rocket {
     dotenv().ok();
 
     let routes = routes![
-        home::index, home::index_no_user,
+        home::index, home::index_no_user, home::files,
         sessions::login_form, sessions::login, sessions::logout,
         users::new, users::create,
         user_cameras::index, user_cameras::new, user_cameras::create, user_cameras::destroy,
