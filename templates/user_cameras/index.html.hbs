@@ -13,7 +13,8 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Camera model</th>
+        <th>Brand</th>
+        <th>Model</th>
         <th>Serial number</th>
         <th>Roll prefix</th>
         <th></th>
@@ -23,6 +24,7 @@
     {{#each resources}}
       <tr>
         <td>{{user_camera.id}}</td>
+        <td>{{brand.name}}</td>
         <td>{{camera.model}}</td>
         <td>{{user_camera.serial_number}}</td>
         <td>{{user_camera.roll_prefix}}</td>
@@ -36,6 +38,7 @@
     {{/each}}
     <tfoot>
       <tr>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>

@@ -1,20 +1,22 @@
 use rocket_contrib::Template;
 use diesel::{ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, LoadDsl};
 use db_conn::DbConn;
+use models::brands::Brand;
 use models::cameras::Camera;
 use models::user_cameras::{NewUserCamera, UserCamera, UserCameraForm};
 use models::users::CurrentUser;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::UUID;
-use schema::{cameras, user_cameras};
+use schema::{brands, cameras, user_cameras};
 use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
 use uuid::Uuid;
 
 #[derive(Serialize)]
-struct FullUserCamera {
+struct FullUserCamera<'a> {
     user_camera: UserCamera,
-    camera: Camera,
+    camera: &'a Camera,
+    brand: &'a Brand,
 }
 
 #[get("/user_cameras", format = "text/html")]
@@ -25,17 +27,28 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
     };
 
     use schema::user_cameras::dsl::user_id;
+    use schema::cameras::dsl::id as camera_id;
 
-    let user_cameras = user_cameras::table
-        .inner_join(cameras::table)
+    let uc_cameras = user_cameras::table
         .filter(user_id.eq(&current_user.id))
-        .load::<(UserCamera, Camera)>(&*conn)
+        .load::<UserCamera>(&*conn)
         .expect("Error loading user cameras");
 
-    let full_user_cameras: Vec<FullUserCamera> = user_cameras
+    let camera_ids: Vec<Uuid> = uc_cameras.iter().map(|&ref uc| uc.camera_id).collect();
+
+    let camera_brands = cameras::table
+        .inner_join(brands::table)
+        .filter(camera_id.eq_any(camera_ids))
+        .load::<(Camera, Brand)>(&*conn)
+        .expect("Error loading cameras with brands");
+
+    let full_user_cameras: Vec<FullUserCamera> = uc_cameras
         .into_iter()
-        .map(|(uc, camera)| {
-            FullUserCamera { user_camera: uc, camera: camera }
+        .map(|uc| {
+            let &(ref camera, ref brand) = camera_brands.iter()
+                .find(|&&(ref camera, _)| camera.id == uc.camera_id)
+                .expect("meow");
+            FullUserCamera { user_camera: uc, camera: &camera, brand: &brand }
         })
         .collect();
 
