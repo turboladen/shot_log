@@ -1,0 +1,22 @@
+{{#> layout/base title="New User Camera"}}
+  {{#*inline "container-layout"}}
+    <form action="/user_cameras" method="post">
+      <div class="field">
+        <label class="label">Camera</label>
+        <input class="input" type="text" name="camera_id">
+      </div>
+
+      <div class="field">
+        <label class="label">Roll prefix</label>
+        <input class="input" type="text" name="roll_prefix">
+      </div>
+
+      <div class="field">
+        <label class="label">Serial number</label>
+        <input class="input" type="text" name="serial_number">
+      </div>
+
+      <input type="submit" class="button is-block is-info is-large" value="create">
+    </form>
+  {{/inline}}
+{{/layout/base}}

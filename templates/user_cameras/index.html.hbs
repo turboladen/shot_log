@@ -1,0 +1,51 @@
+{{#> layout/base title="My Cameras"}}
+  {{#*inline "container-layout"}}
+
+  <nav class="level">
+    <div class="level-left">
+      <div class="level-item">
+        <h1 class="title">{{name}}</h1>
+      </div>
+    </div>
+  </nav>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Camera model</th>
+        <th>Serial number</th>
+        <th>Roll prefix</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each user_cameras}}
+      <tr>
+        <td>{{user_camera.id}}</td>
+        <td>{{camera.model}}</td>
+        <td>{{user_camera.serial_number}}</td>
+        <td>{{user_camera.roll_prefix}}</td>
+        <td>
+          <form action="/user_cameras/{{user_camera.id}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button class="button is-danger is-outlined" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+    <tfoot>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <a class="button is-link level-item" href="/user_cameras/new">New</a>
+        </td>
+      </tr>
+    </tfoot>
+    </tbody>
+  </table>
+  {{/inline}}
+{{/layout/base}}

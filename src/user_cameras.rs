@@ -1,0 +1,112 @@
+use rocket_contrib::Template;
+use diesel::{ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, LoadDsl};
+use db_conn::DbConn;
+use models::cameras::Camera;
+use models::user_cameras::{NewUserCamera, UserCamera, UserCameraForm};
+use models::users::CurrentUser;
+use rocket::request::{FlashMessage, Form};
+use rocket::response::{Flash, Redirect};
+use rocket_contrib::UUID;
+use schema::{cameras, user_cameras};
+use uuid::Uuid;
+
+#[derive(Serialize)]
+struct TemplateContext<'a> {
+    current_user: CurrentUser,
+    name: &'a str,
+    user_cameras: Vec<FullUserCamera>
+}
+
+#[derive(Serialize)]
+struct FullUserCamera {
+    user_camera: UserCamera,
+    camera: Camera,
+}
+
+#[derive(Serialize)]
+struct FlashContext<'a> {
+    flash_message: &'a str,
+    flash_type: &'a str,
+}
+
+#[get("/user_cameras", format = "text/html")]
+fn index(current_user: CurrentUser, conn: DbConn) -> Template {
+    use schema::user_cameras::dsl::user_id;
+
+    let user_cameras = user_cameras::table
+        .inner_join(cameras::table)
+        .filter(user_id.eq(&current_user.id))
+        .load::<(UserCamera, Camera)>(&*conn)
+        .expect("Error loading user cameras");
+
+    let full_user_cameras: Vec<FullUserCamera> = user_cameras
+        .into_iter()
+        .map(|(uc, camera)| {
+            FullUserCamera { user_camera: uc, camera: camera }
+        })
+        .collect();
+
+    let context = TemplateContext {
+        current_user: current_user,
+        name: "My Cameras",
+        user_cameras: full_user_cameras,
+    };
+
+    Template::render("user_cameras/index", context)
+}
+
+#[get("/user_cameras/new")]
+fn new(flash: Option<FlashMessage>) -> Template {
+    match flash {
+        Some(msg) => {
+            let context = FlashContext { flash_message: msg.msg(), flash_type: "danger" };
+            Template::render("user_cameras/form", context)
+        },
+        None => Template::render("user_cameras/form", ())
+    }
+}
+
+#[post("/user_cameras", data = "<user_camera_form>")]
+fn create(current_user: CurrentUser, user_camera_form: Form<UserCameraForm>, conn: DbConn) -> Result<Flash<Redirect>, Flash<Redirect>> {
+    let uc = user_camera_form.get();
+    let user_id: Uuid = current_user.id;
+    let camera_id: Uuid = *uc.camera_id;
+
+    let new_uc = NewUserCamera {
+        user_id: user_id,
+        camera_id: camera_id,
+        roll_prefix: uc.roll_prefix.clone(),
+        serial_number: uc.serial_number.clone()
+    };
+
+    match ::diesel::insert(&new_uc).into(user_cameras::table).execute(&*conn) {
+        Ok(_) => {
+            Ok(Flash::success(Redirect::to("/user_cameras"), "Added"))
+        },
+        Err(err) => {
+            Err(Flash::error(Redirect::to("/user_cameras/new"), err.to_string()))
+        }
+    }
+}
+
+#[delete("/user_cameras/<id>")]
+fn destroy(current_user: CurrentUser, id: UUID, conn: DbConn) -> Result<Flash<Redirect>, Flash<Redirect>> {
+    use schema::user_cameras::dsl::id as user_camera_id;
+    use schema::user_cameras::dsl::user_id;
+
+    let result = ::diesel::delete(
+        user_cameras::table
+        .filter(user_camera_id.eq(*id))
+        .filter(user_id.eq(current_user.id))
+        )
+        .execute(&*conn);
+
+    match result {
+        Ok(_uc) => {
+            Ok(Flash::success(Redirect::to("/user_cameras"), "Removed!"))
+        },
+        Err(err) => {
+            Err(Flash::error(Redirect::to("/user_cameras"), err.to_string()))
+        }
+    }
+}

@@ -5,7 +5,7 @@ use models::film_formats::FilmFormat;
 use schema::film_stocks;
 use uuid::Uuid;
 
-#[derive(Identifiable, Queryable, Serialize, Associations)]
+#[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Brand)]
 #[belongs_to(FilmFormat)]
 pub struct FilmStock {

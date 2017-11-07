@@ -36,6 +36,7 @@ mod film_stocks;
 mod home;
 mod lenses;
 mod sessions;
+mod user_cameras;
 mod users;
 
 use dotenv::dotenv;
@@ -53,6 +54,7 @@ fn rocket() -> Rocket {
         home::index, home::index_no_user,
         sessions::login_form, sessions::login, sessions::logout,
         users::new, users::create,
+        user_cameras::index, user_cameras::new, user_cameras::create, user_cameras::destroy,
         brands::index,
         cameras::index,
         film_formats::index,

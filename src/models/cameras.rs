@@ -4,7 +4,7 @@ use models::brands::Brand;
 use schema::cameras;
 use uuid::Uuid;
 
-#[derive(Identifiable, Queryable, Serialize, Associations)]
+#[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Brand)]
 pub struct Camera {
     pub id: Uuid,

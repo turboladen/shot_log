@@ -3,7 +3,7 @@ use chrono::offset::Utc;
 use uuid::Uuid;
 use schema::brands;
 
-#[derive(Identifiable, Queryable, Serialize, Associations)]
+#[derive(Associations, Identifiable, Queryable, Serialize)]
 pub struct Brand {
     pub id: Uuid,
     pub name: String,
