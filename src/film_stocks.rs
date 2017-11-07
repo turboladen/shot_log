@@ -6,13 +6,7 @@ use models::film_formats::FilmFormat;
 use models::film_stocks::FilmStock;
 use models::users::CurrentUser;
 use schema::{brands, film_formats, film_stocks};
-
-#[derive(Serialize)]
-struct TemplateContext<'a> {
-    current_user: CurrentUser,
-    name: &'a str,
-    film_stocks: Vec<FullFilmStock>
-}
+use super::template_contexts::ListResourcesContext;
 
 #[derive(Serialize)]
 struct FullFilmStock {
@@ -42,10 +36,11 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
         })
         .collect();
 
-    let context = TemplateContext {
-        current_user: current_user,
+    let context = ListResourcesContext {
+        current_user: Some(current_user),
+        flash: None,
         name: "Film Stocks",
-        film_stocks: full_stocks,
+        resources: full_stocks,
     };
 
     Template::render("film_stocks/index", context)

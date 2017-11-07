@@ -5,13 +5,7 @@ use models::cameras::Camera;
 use models::users::CurrentUser;
 use rocket_contrib::Template;
 use schema::{brands, cameras};
-
-#[derive(Serialize)]
-struct TemplateContext<'a> {
-    current_user: CurrentUser,
-    name: &'a str,
-    cameras: Vec<FullCamera>
-}
+use super::template_contexts::ListResourcesContext;
 
 #[derive(Serialize)]
 struct FullCamera {
@@ -33,10 +27,11 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
         })
         .collect();
 
-    let context = TemplateContext {
-        current_user: current_user,
+    let context = ListResourcesContext {
+        current_user: Some(current_user),
+        flash: None,
         name: "Cameras",
-        cameras: full_cameras,
+        resources: full_cameras,
     };
 
     Template::render("cameras/index", context)

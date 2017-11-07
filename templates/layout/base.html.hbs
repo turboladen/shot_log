@@ -22,32 +22,32 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 
   </head>
-        <body>
-          <!--[if lte IE 9]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-          <![endif]-->
+  <body>
+    <!--[if lte IE 9]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
 
-          <!-- Add your site or application content here -->
-          <header>
-            {{> layout/navbar }}
-          </header>
+    <!-- Add your site or application content here -->
+    <header>
+      {{> layout/navbar }}
+    </header>
 
-          {{#> hero-block}}
-            {{!-- Hero content goes here. --}}
-          {{/hero-block}}
+    {{#> hero-block}}
+      {{!-- Hero content goes here. --}}
+    {{/hero-block}}
 
-          {{#> container-block}}
-            <section class="section">
-              <div class="container">
-                {{> layout/flash }}
+    {{#> container-block}}
+      <section class="section">
+        <div class="container">
+          {{> layout/flash }}
 
-                {{> container-layout}}
-              </div>
-            </section>
-          {{/container-block}}
+          {{> container-layout}}
+        </div>
+      </section>
+    {{/container-block}}
 
-          <!-- JS
-            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-          <script async src="//cdnjs.cloudflare.com/ajax/libs/turbolinks/5.0.3/turbolinks.js"></script>
-        </body>
+    <!-- JS
+      –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/turbolinks/5.0.3/turbolinks.js"></script>
+  </body>
 </html>

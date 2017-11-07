@@ -7,20 +7,12 @@ use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
 use schema::users;
-
-#[derive(Serialize)]
-struct FlashContext<'a> {
-    flash_message: &'a str,
-    flash_type: &'a str,
-}
+use super::template_contexts::FlashContext;
 
 #[get("/users/new")]
 fn new(flash: Option<FlashMessage>) -> Template {
     match flash {
-        Some(msg) => {
-            let context = FlashContext { flash_message: msg.msg(), flash_type: "danger" };
-            Template::render("users/form", context)
-        },
+        Some(fm) => Template::render("users/form", FlashContext::new(fm)),
         None => Template::render("users/form", ())
     }
 }

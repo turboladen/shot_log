@@ -4,23 +4,18 @@ use models::brands::Brand;
 use models::users::CurrentUser;
 use rocket_contrib::Template;
 use schema::brands;
-
-#[derive(Serialize)]
-struct TemplateContext<'a> {
-    current_user: CurrentUser,
-    name: &'a str,
-    items: Vec<Brand>
-}
+use super::template_contexts::ListResourcesContext;
 
 #[get("/brands", format = "text/html")]
 fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let result = brands::table.load::<Brand>(&*conn);
     let brands = result.expect("Error loading brands");
 
-    let context = TemplateContext {
-        current_user: current_user,
+    let context = ListResourcesContext {
+        current_user: Some(current_user),
+        flash: None,
         name: "Brands",
-        items: brands,
+        resources: brands,
     };
 
     Template::render("brands/index", context)

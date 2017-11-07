@@ -8,14 +8,8 @@ use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::UUID;
 use schema::{cameras, user_cameras};
+use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
 use uuid::Uuid;
-
-#[derive(Serialize)]
-struct TemplateContext<'a> {
-    current_user: CurrentUser,
-    name: &'a str,
-    user_cameras: Vec<FullUserCamera>
-}
 
 #[derive(Serialize)]
 struct FullUserCamera {
@@ -23,14 +17,13 @@ struct FullUserCamera {
     camera: Camera,
 }
 
-#[derive(Serialize)]
-struct FlashContext<'a> {
-    flash_message: &'a str,
-    flash_type: &'a str,
-}
-
 #[get("/user_cameras", format = "text/html")]
-fn index(current_user: CurrentUser, conn: DbConn) -> Template {
+fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
+    let flash_context = match flash {
+        Some(fm) => Some(FlashContext::new(fm)),
+        None => None,
+    };
+
     use schema::user_cameras::dsl::user_id;
 
     let user_cameras = user_cameras::table
@@ -46,24 +39,29 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
         })
         .collect();
 
-    let context = TemplateContext {
-        current_user: current_user,
+    let context = ListResourcesContext {
+        current_user: Some(current_user),
+        flash: flash_context,
         name: "My Cameras",
-        user_cameras: full_user_cameras,
+        resources: full_user_cameras,
     };
 
     Template::render("user_cameras/index", context)
 }
 
 #[get("/user_cameras/new")]
-fn new(flash: Option<FlashMessage>) -> Template {
-    match flash {
-        Some(msg) => {
-            let context = FlashContext { flash_message: msg.msg(), flash_type: "danger" };
-            Template::render("user_cameras/form", context)
-        },
-        None => Template::render("user_cameras/form", ())
-    }
+fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
+    let flash_context = match flash {
+        Some(fm) => Some(FlashContext::new(fm)),
+        None => None,
+    };
+
+    let context = EmptyResourceContext {
+        current_user: Some(current_user),
+        flash: flash_context,
+    };
+
+    Template::render("user_cameras/form", context)
 }
 
 #[post("/user_cameras", data = "<user_camera_form>")]
