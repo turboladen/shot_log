@@ -58,7 +58,7 @@ fn rocket() -> Rocket {
         users::new, users::create,
         user_cameras::index, user_cameras::new, user_cameras::create, user_cameras::destroy,
         brands::index,
-        cameras::index,
+        cameras::index, cameras::index_json,
         film_formats::index,
         film_stocks::index,
         lenses::index,

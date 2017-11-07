@@ -3,7 +3,10 @@
     <form action="/user_cameras" method="post">
       <div class="field">
         <label class="label">Camera</label>
-        <input class="input" type="text" name="camera_id">
+        <div class="select">
+          <select id="camera-list" name="camera_id">
+          </select>
+        </div>
       </div>
 
       <div class="field">
@@ -20,3 +23,17 @@
     </form>
   {{/inline}}
 {{/layout/base}}
+  <script type="text/javascript">
+$(document).ready(function() {
+  $.getJSON('/cameras', function(json) {
+    $('#camera-list').empty();
+    $('#camera-list').append(
+      $('<option>').text('Select')
+    );
+
+    $.each(json, function(i, camera) {
+      $('#camera-list').append($('<option>').text(camera.brand_and_model).attr('value', camera.id));
+    });
+  });
+})
+  </script>
