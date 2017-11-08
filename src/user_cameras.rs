@@ -1,5 +1,5 @@
 use rocket_contrib::Template;
-use diesel::{ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, LoadDsl};
+use diesel::{ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, JoinOnDsl, LoadDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
 use models::cameras::Camera;
@@ -13,10 +13,10 @@ use super::template_contexts::{EmptyResourceContext, FlashContext, ListResources
 use uuid::Uuid;
 
 #[derive(Serialize)]
-struct FullUserCamera<'a> {
+struct FullUserCamera {
     user_camera: UserCamera,
-    camera: &'a Camera,
-    brand: &'a Brand,
+    camera: Camera,
+    brand: Brand,
 }
 
 #[get("/user_cameras", format = "text/html")]
@@ -26,29 +26,23 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
         None => None,
     };
 
-    use schema::user_cameras::dsl::user_id;
-    use schema::cameras::dsl::id as camera_id;
+    enable_multi_table_joins!(user_cameras, brands);
 
-    let uc_cameras = user_cameras::table
-        .filter(user_id.eq(&current_user.id))
-        .load::<UserCamera>(&*conn)
+    let data = user_cameras::table
+        .inner_join(brands::table
+                    .inner_join(cameras::table
+                                .on(cameras::brand_id.eq(brands::id))
+                               )
+                    .on(user_cameras::camera_id.eq(cameras::id))
+                   )
+        .filter(user_cameras::user_id.eq(&current_user.id))
+        .load::<(UserCamera, (Brand, Camera))>(&*conn)
         .expect("Error loading user cameras");
 
-    let camera_ids: Vec<Uuid> = uc_cameras.iter().map(|&ref uc| uc.camera_id).collect();
-
-    let camera_brands = cameras::table
-        .inner_join(brands::table)
-        .filter(camera_id.eq_any(camera_ids))
-        .load::<(Camera, Brand)>(&*conn)
-        .expect("Error loading cameras with brands");
-
-    let full_user_cameras: Vec<FullUserCamera> = uc_cameras
+    let full_user_cameras: Vec<FullUserCamera> = data
         .into_iter()
-        .map(|uc| {
-            let &(ref camera, ref brand) = camera_brands.iter()
-                .find(|&&(ref camera, _)| camera.id == uc.camera_id)
-                .expect("meow");
-            FullUserCamera { user_camera: uc, camera: &camera, brand: &brand }
+        .map(|(uc, (brand, camera))| {
+            FullUserCamera { user_camera: uc, camera: camera, brand: brand }
         })
         .collect();
 
