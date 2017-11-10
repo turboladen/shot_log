@@ -7,6 +7,7 @@ use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
 use schema::users;
+use std::env;
 use super::template_contexts::FlashContext;
 
 #[get("/users/new")]
@@ -60,7 +61,7 @@ fn create(
 }
 
 pub fn password_to_hash(password: &str) -> String {
-    let hashed_password = argon2d_simple(password, env!("SALT"));
+    let hashed_password = argon2d_simple(password, env::var("SALT").expect("No SALT").as_str());
 
     let s: String = hashed_password.into_iter().map(|c| *c as char).collect();
 
