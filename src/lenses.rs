@@ -5,13 +5,7 @@ use models::brands::Brand;
 use models::lenses::Lens;
 use models::users::CurrentUser;
 use schema::{brands, lenses};
-
-#[derive(Serialize)]
-struct TemplateContext<'a> {
-    current_user: CurrentUser,
-    name: &'a str,
-    lenses: Vec<FullLens>
-}
+use super::template_contexts::ListResourcesContext;
 
 #[derive(Serialize)]
 struct FullLens {
@@ -33,10 +27,11 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
         })
         .collect();
 
-    let context = TemplateContext {
-        current_user: current_user,
+    let context = ListResourcesContext {
+        current_user: Some(current_user),
+        flash: None,
         name: "Lenses",
-        lenses: full_lenses,
+        resources: full_lenses,
     };
 
     Template::render("lenses/index", context)

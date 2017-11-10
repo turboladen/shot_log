@@ -23,8 +23,10 @@ extern crate rocket;
 extern crate rocket_contrib;
 extern crate uuid;
 
+extern crate serde;
 #[macro_use] extern crate serde_derive;
 
+pub mod template_contexts;
 pub mod schema;
 pub mod models;
 mod db_conn;
@@ -36,6 +38,7 @@ mod film_stocks;
 mod home;
 mod lenses;
 mod sessions;
+mod user_cameras;
 mod users;
 
 use dotenv::dotenv;
@@ -50,11 +53,12 @@ fn rocket() -> Rocket {
     dotenv().ok();
 
     let routes = routes![
-        home::index, home::index_no_user,
+        home::index, home::index_no_user, home::files,
         sessions::login_form, sessions::login, sessions::logout,
         users::new, users::create,
+        user_cameras::index, user_cameras::new, user_cameras::create, user_cameras::destroy,
         brands::index,
-        cameras::index,
+        cameras::index, cameras::index_json,
         film_formats::index,
         film_stocks::index,
         lenses::index,

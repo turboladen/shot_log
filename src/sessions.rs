@@ -6,21 +6,20 @@ use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
 use schema::users::table as users;
-
-#[derive(Serialize)]
-struct FlashContext<'a> {
-    flash_message: &'a str,
-    flash_type: &'a str,
-}
+use super::template_contexts::{EmptyResourceContext, FlashContext};
 
 #[get("/login")]
 fn login_form(flash: Option<FlashMessage>) -> Template {
     match flash {
-        Some(msg) => {
-            let context = FlashContext { flash_message: msg.msg(), flash_type: "danger" };
-            Template::render("login/form", context)
+        Some(fm) => {
+            let context = EmptyResourceContext {
+                current_user: None,
+                flash: Some(FlashContext::new(fm)),
+            };
+
+            Template::render("sessions/form", context)
         },
-        None => Template::render("login/form", ())
+        None => Template::render("sessions/form", ()),
     }
 }
 
@@ -35,7 +34,7 @@ fn login(conn: DbConn, mut cookies: Cookies, login_form: Form<LoginUser>) -> Res
 
             if user.password_hash == hashed_password {
                 cookies.add_private(Cookie::new("user_id", user.id.to_string()));
-                Ok(Redirect::to("/"))
+                Ok(Redirect::to("/user_cameras"))
             } else {
                 Err(Flash::error(Redirect::to("/login"), "Invalid password"))
             }
@@ -58,7 +57,7 @@ mod tests {
     use rocket::http::ContentType;
     use rocket::http::Status;
     use rocket::local::Client;
-    use super::super::users::test::build_test_user;
+    use super::super::models::users::test::build_test_user;
 
     #[test]
     fn test_login_good() {

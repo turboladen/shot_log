@@ -3,7 +3,7 @@ use chrono::offset::Utc;
 use uuid::Uuid;
 use schema::film_formats;
 
-#[derive(Identifiable, Queryable, Serialize, Associations)]
+#[derive(Associations, Identifiable, Queryable, Serialize)]
 pub struct FilmFormat {
     pub id: Uuid,
     pub designation: String,

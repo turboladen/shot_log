@@ -4,7 +4,7 @@ use models::brands::Brand;
 use uuid::Uuid;
 use schema::lenses;
 
-#[derive(Identifiable, Queryable, Serialize, Associations)]
+#[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Brand)]
 #[table_name="lenses"]
 pub struct Lens {

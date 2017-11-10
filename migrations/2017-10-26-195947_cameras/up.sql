@@ -23,10 +23,13 @@ VALUES
   'SR-T 101',
   (SELECT id FROM brands WHERE name = 'Minolta')
 ), (
-  'XE/XE-1/XE-7',
+  'XE-1',
   (SELECT id FROM brands WHERE name = 'Minolta')
 ), (
-  'XD-7/XD-11',
+  'XD-7',
+  (SELECT id FROM brands WHERE name = 'Minolta')
+), (
+  'XD-11',
   (SELECT id FROM brands WHERE name = 'Minolta')
 ), (
   'Hi-Matic E',

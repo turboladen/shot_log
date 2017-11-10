@@ -1,0 +1,39 @@
+{{#> layout/base title="New User Camera"}}
+  {{#*inline "container-layout"}}
+    <form action="/user_cameras" method="post">
+      <div class="field">
+        <label class="label">Camera</label>
+        <div class="select">
+          <select id="camera-list" name="camera_id">
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Roll prefix</label>
+        <input class="input" type="text" name="roll_prefix">
+      </div>
+
+      <div class="field">
+        <label class="label">Serial number</label>
+        <input class="input" type="text" name="serial_number">
+      </div>
+
+      <input type="submit" class="button is-block is-info is-large" value="create">
+    </form>
+  {{/inline}}
+{{/layout/base}}
+  <script type="text/javascript">
+$(document).ready(function() {
+  $.getJSON('/cameras', function(json) {
+    $('#camera-list').empty();
+    $('#camera-list').append(
+      $('<option>').text('Select')
+    );
+
+    $.each(json, function(i, camera) {
+      $('#camera-list').append($('<option>').text(camera.brand_and_model).attr('value', camera.id));
+    });
+  });
+})
+  </script>
