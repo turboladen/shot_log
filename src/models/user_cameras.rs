@@ -27,7 +27,7 @@ pub struct UserCameraForm {
 }
 
 #[derive(Insertable)]
-#[table_name="user_cameras"]
+#[table_name = "user_cameras"]
 pub struct NewUserCamera {
     pub user_id: Uuid,
     pub camera_id: Uuid,

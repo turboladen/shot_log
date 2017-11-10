@@ -5,7 +5,7 @@ use rocket_contrib::Template;
 use std::path::{Path, PathBuf};
 use super::template_contexts::{EmptyResourceContext, FlashContext};
 
-#[get("/", format="text/html")]
+#[get("/", format = "text/html")]
 fn index(current_user: CurrentUser) -> Template {
     let context = EmptyResourceContext {
         current_user: Some(current_user),
@@ -15,7 +15,7 @@ fn index(current_user: CurrentUser) -> Template {
     Template::render("home", context)
 }
 
-#[get("/", format="text/html", rank = 2)]
+#[get("/", format = "text/html", rank = 2)]
 fn index_no_user(flash: Option<FlashMessage>) -> Template {
     match flash {
         Some(fm) => {
@@ -25,7 +25,7 @@ fn index_no_user(flash: Option<FlashMessage>) -> Template {
             };
 
             Template::render("home", context)
-        },
+        }
         None => Template::render("home", ()),
     }
 }

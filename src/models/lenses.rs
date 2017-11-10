@@ -6,7 +6,7 @@ use schema::lenses;
 
 #[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Brand)]
-#[table_name="lenses"]
+#[table_name = "lenses"]
 pub struct Lens {
     pub id: Uuid,
     pub model: String,

@@ -29,20 +29,22 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
     enable_multi_table_joins!(user_cameras, brands);
 
     let data = user_cameras::table
-        .inner_join(brands::table
-                    .inner_join(cameras::table
-                                .on(cameras::brand_id.eq(brands::id))
-                               )
-                    .on(user_cameras::camera_id.eq(cameras::id))
-                   )
+        .inner_join(
+            brands::table
+                .inner_join(cameras::table.on(cameras::brand_id.eq(brands::id)))
+                .on(user_cameras::camera_id.eq(cameras::id)),
+        )
         .filter(user_cameras::user_id.eq(&current_user.id))
         .load::<(UserCamera, (Brand, Camera))>(&*conn)
         .expect("Error loading user cameras");
 
-    let full_user_cameras: Vec<FullUserCamera> = data
-        .into_iter()
+    let full_user_cameras: Vec<FullUserCamera> = data.into_iter()
         .map(|(uc, (brand, camera))| {
-            FullUserCamera { user_camera: uc, camera: camera, brand: brand }
+            FullUserCamera {
+                user_camera: uc,
+                camera: camera,
+                brand: brand,
+            }
         })
         .collect();
 
@@ -72,7 +74,11 @@ fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
 }
 
 #[post("/user_cameras", data = "<user_camera_form>")]
-fn create(current_user: CurrentUser, user_camera_form: Form<UserCameraForm>, conn: DbConn) -> Result<Flash<Redirect>, Flash<Redirect>> {
+fn create(
+    current_user: CurrentUser,
+    user_camera_form: Form<UserCameraForm>,
+    conn: DbConn,
+) -> Result<Flash<Redirect>, Flash<Redirect>> {
     let uc = user_camera_form.get();
     let user_id: Uuid = current_user.id;
     let camera_id: Uuid = *uc.camera_id;
@@ -81,37 +87,38 @@ fn create(current_user: CurrentUser, user_camera_form: Form<UserCameraForm>, con
         user_id: user_id,
         camera_id: camera_id,
         roll_prefix: uc.roll_prefix.clone(),
-        serial_number: uc.serial_number.clone()
+        serial_number: uc.serial_number.clone(),
     };
 
-    match ::diesel::insert(&new_uc).into(user_cameras::table).execute(&*conn) {
-        Ok(_) => {
-            Ok(Flash::success(Redirect::to("/user_cameras"), "Added"))
-        },
-        Err(err) => {
-            Err(Flash::error(Redirect::to("/user_cameras/new"), err.to_string()))
-        }
+    match ::diesel::insert(&new_uc)
+        .into(user_cameras::table)
+        .execute(&*conn)
+    {
+        Ok(_) => Ok(Flash::success(Redirect::to("/user_cameras"), "Added")),
+        Err(err) => Err(Flash::error(
+            Redirect::to("/user_cameras/new"),
+            err.to_string(),
+        )),
     }
 }
 
 #[delete("/user_cameras/<id>")]
-fn destroy(current_user: CurrentUser, id: UUID, conn: DbConn) -> Result<Flash<Redirect>, Flash<Redirect>> {
+fn destroy(
+    current_user: CurrentUser,
+    id: UUID,
+    conn: DbConn,
+) -> Result<Flash<Redirect>, Flash<Redirect>> {
     use schema::user_cameras::dsl::id as user_camera_id;
     use schema::user_cameras::dsl::user_id;
 
     let result = ::diesel::delete(
         user_cameras::table
-        .filter(user_camera_id.eq(*id))
-        .filter(user_id.eq(current_user.id))
-        )
-        .execute(&*conn);
+            .filter(user_camera_id.eq(*id))
+            .filter(user_id.eq(current_user.id)),
+    ).execute(&*conn);
 
     match result {
-        Ok(_uc) => {
-            Ok(Flash::success(Redirect::to("/user_cameras"), "Removed!"))
-        },
-        Err(err) => {
-            Err(Flash::error(Redirect::to("/user_cameras"), err.to_string()))
-        }
+        Ok(_uc) => Ok(Flash::success(Redirect::to("/user_cameras"), "Removed!")),
+        Err(err) => Err(Flash::error(Redirect::to("/user_cameras"), err.to_string())),
     }
 }

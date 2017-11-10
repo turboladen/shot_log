@@ -9,7 +9,7 @@ use uuid::Uuid;
 #[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Lens)]
 #[belongs_to(User)]
-#[table_name="user_lenses"]
+#[table_name = "user_lenses"]
 pub struct UserLens {
     pub id: Uuid,
     pub user_id: Uuid,
@@ -26,7 +26,7 @@ pub struct UserLensForm {
 }
 
 #[derive(Insertable)]
-#[table_name="user_lenses"]
+#[table_name = "user_lenses"]
 pub struct NewUserLens {
     pub user_id: Uuid,
     pub lens_id: Uuid,

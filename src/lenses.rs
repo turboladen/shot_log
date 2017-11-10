@@ -23,7 +23,10 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let full_lenses: Vec<FullLens> = lens_vec
         .into_iter()
         .map(|(lens, brand)| {
-            FullLens { lens: lens, brand: brand }
+            FullLens {
+                lens: lens,
+                brand: brand,
+            }
         })
         .collect();
 

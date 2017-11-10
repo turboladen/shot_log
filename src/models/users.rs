@@ -13,7 +13,7 @@ pub struct User {
 }
 
 #[derive(Identifiable, Queryable, Serialize, Hash)]
-#[table_name="users"]
+#[table_name = "users"]
 pub struct CurrentUser {
     pub id: Uuid,
     pub email: String,
@@ -21,9 +21,9 @@ pub struct CurrentUser {
     pub updated_at: DateTime<Utc>,
 }
 
-use rocket::{State, Outcome};
+use rocket::{Outcome, State};
 use rocket::http::Status;
-use rocket::request::{self, Request, FromRequest};
+use rocket::request::{self, FromRequest, Request};
 use diesel::*;
 use db_conn::DbConn;
 
@@ -45,7 +45,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {
 
                 let conn = match pool.get() {
                     Ok(conn) => DbConn(conn),
-                    Err(_) => return Outcome::Failure((Status::ServiceUnavailable, ()))
+                    Err(_) => return Outcome::Failure((Status::ServiceUnavailable, ())),
                 };
 
                 match users.find(user_id).first::<User>(&*conn) {
@@ -54,17 +54,17 @@ impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {
                             id: user.id,
                             email: user.email,
                             created_at: user.created_at,
-                            updated_at: user.updated_at
+                            updated_at: user.updated_at,
                         };
                         Outcome::Success(u)
-                    },
-                    Err(_) => Outcome::Forward(())
+                    }
+                    Err(_) => Outcome::Forward(()),
                 }
-            },
+            }
             None => {
                 info!("No cookie in cookies");
                 Outcome::Forward(())
-            },
+            }
         }
     }
 }
@@ -83,7 +83,7 @@ pub struct LoginUser {
 }
 
 #[derive(Insertable)]
-#[table_name="users"]
+#[table_name = "users"]
 pub struct UserToSave {
     pub email: String,
     pub password_hash: String,
@@ -118,15 +118,19 @@ pub mod test {
         let conn = pool.get().unwrap();
         let hashed_password = super::super::super::users::password_to_hash(TEST_USER_PASSWORD);
 
-        let user = match users.filter(email.eq(TEST_USER_EMAIL)).first::<User>(&*conn) {
+        let user = match users
+            .filter(email.eq(TEST_USER_EMAIL))
+            .first::<User>(&*conn)
+        {
             Ok(u) => u,
             Err(_) => {
                 let user_to_save = UserToSave {
                     email: String::from(TEST_USER_EMAIL),
-                    password_hash: hashed_password.clone()
+                    password_hash: hashed_password.clone(),
                 };
 
-                let u: User = ::diesel::insert(&user_to_save).into(users)
+                let u: User = ::diesel::insert(&user_to_save)
+                    .into(users)
                     .get_result(&*conn)
                     .expect("Error saving test user");
 

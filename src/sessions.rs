@@ -1,6 +1,6 @@
 use db_conn::DbConn;
 use diesel::*;
-use models::users::{CurrentUser, User, LoginUser};
+use models::users::{CurrentUser, LoginUser, User};
 use rocket::http::{Cookie, Cookies};
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
@@ -18,13 +18,17 @@ fn login_form(flash: Option<FlashMessage>) -> Template {
             };
 
             Template::render("sessions/form", context)
-        },
+        }
         None => Template::render("sessions/form", ()),
     }
 }
 
 #[post("/login", data = "<login_form>")]
-fn login(conn: DbConn, mut cookies: Cookies, login_form: Form<LoginUser>) -> Result<Redirect, Flash<Redirect>> {
+fn login(
+    conn: DbConn,
+    mut cookies: Cookies,
+    login_form: Form<LoginUser>,
+) -> Result<Redirect, Flash<Redirect>> {
     use schema::users::dsl::email;
     let form = login_form.get();
 
@@ -38,10 +42,11 @@ fn login(conn: DbConn, mut cookies: Cookies, login_form: Form<LoginUser>) -> Res
             } else {
                 Err(Flash::error(Redirect::to("/login"), "Invalid password"))
             }
-        },
-        Err(_) => {
-            Err(Flash::error(Redirect::to("/login"), format!("No user with email {}", &form.email)))
         }
+        Err(_) => Err(Flash::error(
+            Redirect::to("/login"),
+            format!("No user with email {}", &form.email),
+        )),
     }
 }
 
@@ -63,9 +68,14 @@ mod tests {
     fn test_login_good() {
         let test_user = build_test_user();
         let client = Client::new(super::super::rocket()).expect("valid rocket instance");
-        let body = format!("email={}&password={:?}", test_user.email, test_user.password);
+        let body = format!(
+            "email={}&password={:?}",
+            test_user.email,
+            test_user.password
+        );
 
-        let response = client.post("/login")
+        let response = client
+            .post("/login")
             .header(ContentType::Form)
             .body(body)
             .dispatch();
@@ -82,7 +92,8 @@ mod tests {
         let client = Client::new(super::super::rocket()).expect("valid rocket instance");
         let body = format!("email={}&password={:?}", test_user.email, "blargh");
 
-        let response = client.post("/login")
+        let response = client
+            .post("/login")
             .header(ContentType::Form)
             .body(body)
             .dispatch();
@@ -108,7 +119,8 @@ mod tests {
         let client = Client::new(super::super::rocket()).expect("valid rocket instance");
         let body = format!("email={}&password={:?}", "meow@meow.com", "blargh");
 
-        let response = client.post("/login")
+        let response = client
+            .post("/login")
             .header(ContentType::Form)
             .body(body)
             .dispatch();
