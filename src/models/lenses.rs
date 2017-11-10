@@ -9,7 +9,7 @@ use schema::lenses;
 #[table_name="lenses"]
 pub struct Lens {
     pub id: Uuid,
-    pub name: String,
+    pub model: String,
     pub focal_length_min_value: f64,
     pub focal_length_min_unit: String,
     pub focal_length_max_value: Option<f64>,
@@ -24,4 +24,10 @@ pub struct Lens {
     pub brand_id: Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Serialize)]
+pub struct LensDropDown {
+    pub id: Uuid,
+    pub brand_and_model: String,
 }

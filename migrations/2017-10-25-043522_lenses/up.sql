@@ -1,6 +1,6 @@
 CREATE TABLE lenses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR NOT NULL,
+  model VARCHAR NOT NULL,
   focal_length_min_value float NOT NULL,
   focal_length_min_unit VARCHAR NOT NULL,
   focal_length_max_value float,
@@ -17,7 +17,7 @@ CREATE TABLE lenses (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX ON lenses (name);
+CREATE INDEX ON lenses (model);
 CREATE INDEX ON lenses (focal_length_min_value);
 CREATE INDEX ON lenses (aperture_max);
 CREATE INDEX ON lenses (brand_id);
@@ -28,7 +28,7 @@ FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
 INSERT INTO lenses (
-  name,
+  model,
   focal_length_min_value, focal_length_min_unit,
   aperture_min, aperture_max,
   element_count, group_count,

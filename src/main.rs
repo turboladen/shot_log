@@ -39,6 +39,7 @@ mod home;
 mod lenses;
 mod sessions;
 mod user_cameras;
+mod user_lenses;
 mod users;
 
 use dotenv::dotenv;
@@ -57,11 +58,12 @@ fn rocket() -> Rocket {
         sessions::login_form, sessions::login, sessions::logout,
         users::new, users::create,
         user_cameras::index, user_cameras::new, user_cameras::create, user_cameras::destroy,
+        user_lenses::index, user_lenses::new, user_lenses::create, user_lenses::destroy,
         brands::index,
         cameras::index, cameras::index_json,
         film_formats::index,
         film_stocks::index,
-        lenses::index,
+        lenses::index, lenses::index_json
     ];
 
     rocket::ignite()
