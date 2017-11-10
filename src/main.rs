@@ -1,11 +1,8 @@
 #![feature(custom_derive)]
-
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
-
 #![feature(const_fn)]
-
-#![recursion_limit="256"]
+#![recursion_limit = "256"]
 
 extern crate argon2rs;
 extern crate chrono;
@@ -17,14 +14,15 @@ extern crate dotenv;
 extern crate env_logger;
 #[macro_use]
 extern crate log;
-extern crate r2d2_diesel;
 extern crate r2d2;
+extern crate r2d2_diesel;
 extern crate rocket;
 extern crate rocket_contrib;
 extern crate uuid;
 
 extern crate serde;
-#[macro_use] extern crate serde_derive;
+#[macro_use]
+extern crate serde_derive;
 
 pub mod template_contexts;
 pub mod schema;
@@ -54,16 +52,29 @@ fn rocket() -> Rocket {
     dotenv().ok();
 
     let routes = routes![
-        home::index, home::index_no_user, home::files,
-        sessions::login_form, sessions::login, sessions::logout,
-        users::new, users::create,
-        user_cameras::index, user_cameras::new, user_cameras::create, user_cameras::destroy,
-        user_lenses::index, user_lenses::new, user_lenses::create, user_lenses::destroy,
         brands::index,
-        cameras::index, cameras::index_json,
+        cameras::index,
+        cameras::index_json,
         film_formats::index,
         film_stocks::index,
-        lenses::index, lenses::index_json
+        home::index,
+        home::index_no_user,
+        home::files,
+        lenses::index,
+        lenses::index_json,
+        sessions::login_form,
+        sessions::login,
+        sessions::logout,
+        users::new,
+        users::create,
+        user_cameras::index,
+        user_cameras::new,
+        user_cameras::create,
+        user_cameras::destroy,
+        user_lenses::index,
+        user_lenses::new,
+        user_lenses::create,
+        user_lenses::destroy
     ];
 
     rocket::ignite()

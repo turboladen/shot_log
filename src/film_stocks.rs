@@ -32,7 +32,11 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
         .zip(fsff_vec)
         .map(|((fs1, b), (fs2, ff))| {
             assert_eq!(fs1.id, fs2.id, "Got mismatched film stocks");
-            FullFilmStock { film_stock: fs1, brand: b, film_format: ff }
+            FullFilmStock {
+                film_stock: fs1,
+                brand: b,
+                film_format: ff,
+            }
         })
         .collect();
 

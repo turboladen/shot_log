@@ -1,5 +1,5 @@
 use rocket::request::FlashMessage;
-use serde::ser::{Serialize, Serializer, SerializeStruct};
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::hash::{Hash, Hasher};
 use super::models::users::CurrentUser;
 
@@ -9,7 +9,9 @@ pub struct FlashContext {
 
 impl FlashContext {
     pub fn new(flash_message: FlashMessage) -> Self {
-        FlashContext { flash_message: flash_message }
+        FlashContext {
+            flash_message: flash_message,
+        }
     }
 
     fn css_class(&self) -> &str {
@@ -17,7 +19,7 @@ impl FlashContext {
             "success" => "success",
             "warning" => "warning",
             "error" => "danger",
-            _ => "info"
+            _ => "info",
         }
     }
 
@@ -35,7 +37,8 @@ impl Hash for FlashContext {
 
 impl Serialize for FlashContext {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer
+    where
+        S: Serializer,
     {
         let mut state = serializer.serialize_struct("FlashContext", 2)?;
 

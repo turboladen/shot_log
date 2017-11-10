@@ -29,20 +29,22 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
     enable_multi_table_joins!(user_lenses, brands);
 
     let data = user_lenses::table
-        .inner_join(brands::table
-                    .inner_join(lenses::table
-                                .on(lenses::brand_id.eq(brands::id))
-                               )
-                    .on(user_lenses::lens_id.eq(lenses::id))
-                   )
+        .inner_join(
+            brands::table
+                .inner_join(lenses::table.on(lenses::brand_id.eq(brands::id)))
+                .on(user_lenses::lens_id.eq(lenses::id)),
+        )
         .filter(user_lenses::user_id.eq(&current_user.id))
         .load::<(UserLens, (Brand, Lens))>(&*conn)
         .expect("Error loading user lenses");
 
-    let full_user_lenses: Vec<FullUserLens> = data
-        .into_iter()
+    let full_user_lenses: Vec<FullUserLens> = data.into_iter()
         .map(|(uc, (brand, lens))| {
-            FullUserLens { user_lens: uc, lens: lens, brand: brand }
+            FullUserLens {
+                user_lens: uc,
+                lens: lens,
+                brand: brand,
+            }
         })
         .collect();
 
@@ -72,7 +74,11 @@ fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
 }
 
 #[post("/user_lenses", data = "<user_lens_form>")]
-fn create(current_user: CurrentUser, user_lens_form: Form<UserLensForm>, conn: DbConn) -> Result<Flash<Redirect>, Flash<Redirect>> {
+fn create(
+    current_user: CurrentUser,
+    user_lens_form: Form<UserLensForm>,
+    conn: DbConn,
+) -> Result<Flash<Redirect>, Flash<Redirect>> {
     let uc = user_lens_form.get();
     let user_id: Uuid = current_user.id;
     let lens_id: Uuid = *uc.lens_id;
@@ -80,37 +86,38 @@ fn create(current_user: CurrentUser, user_lens_form: Form<UserLensForm>, conn: D
     let new_uc = NewUserLens {
         user_id: user_id,
         lens_id: lens_id,
-        serial_number: uc.serial_number.clone()
+        serial_number: uc.serial_number.clone(),
     };
 
-    match ::diesel::insert(&new_uc).into(user_lenses::table).execute(&*conn) {
-        Ok(_) => {
-            Ok(Flash::success(Redirect::to("/user_lenses"), "Added"))
-        },
-        Err(err) => {
-            Err(Flash::error(Redirect::to("/user_lenses/new"), err.to_string()))
-        }
+    match ::diesel::insert(&new_uc)
+        .into(user_lenses::table)
+        .execute(&*conn)
+    {
+        Ok(_) => Ok(Flash::success(Redirect::to("/user_lenses"), "Added")),
+        Err(err) => Err(Flash::error(
+            Redirect::to("/user_lenses/new"),
+            err.to_string(),
+        )),
     }
 }
 
 #[delete("/user_lenses/<id>")]
-fn destroy(current_user: CurrentUser, id: UUID, conn: DbConn) -> Result<Flash<Redirect>, Flash<Redirect>> {
+fn destroy(
+    current_user: CurrentUser,
+    id: UUID,
+    conn: DbConn,
+) -> Result<Flash<Redirect>, Flash<Redirect>> {
     use schema::user_lenses::dsl::id as user_lens_id;
     use schema::user_lenses::dsl::user_id;
 
     let result = ::diesel::delete(
         user_lenses::table
-        .filter(user_lens_id.eq(*id))
-        .filter(user_id.eq(current_user.id))
-        )
-        .execute(&*conn);
+            .filter(user_lens_id.eq(*id))
+            .filter(user_id.eq(current_user.id)),
+    ).execute(&*conn);
 
     match result {
-        Ok(_uc) => {
-            Ok(Flash::success(Redirect::to("/user_lenses"), "Removed!"))
-        },
-        Err(err) => {
-            Err(Flash::error(Redirect::to("/user_lenses"), err.to_string()))
-        }
+        Ok(_uc) => Ok(Flash::success(Redirect::to("/user_lenses"), "Removed!")),
+        Err(err) => Err(Flash::error(Redirect::to("/user_lenses"), err.to_string())),
     }
 }

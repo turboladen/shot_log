@@ -23,7 +23,10 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let full_cameras: Vec<FullCamera> = camera_vec
         .into_iter()
         .map(|(camera, brand)| {
-            FullCamera { camera: camera, brand: brand }
+            FullCamera {
+                camera: camera,
+                brand: brand,
+            }
         })
         .collect();
 
