@@ -25,3 +25,9 @@ pub struct Lens {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Serialize)]
+pub struct LensDropDown {
+    pub id: Uuid,
+    pub brand_and_model: String,
+}

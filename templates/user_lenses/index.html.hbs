@@ -1,0 +1,52 @@
+{{#> layout/base title="My Lenses"}}
+  {{#*inline "container-layout"}}
+
+  <nav class="level">
+    <div class="level-left">
+      <div class="level-item">
+        <h1 class="title">{{name}}</h1>
+      </div>
+    </div>
+  </nav>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Brand</th>
+        <th>Model</th>
+        <th>Serial number</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each resources}}
+      <tr>
+        <td>{{user_lens.id}}</td>
+        <td>{{brand.name}}</td>
+        <td>{{lens.model}}</td>
+        <td>{{user_lens.serial_number}}</td>
+        <td>
+          <form action="/user_lenses/{{user_lens.id}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button class="button is-danger is-outlined" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+    <tfoot>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <a class="button is-link level-item" href="/user_lenses/new">New</a>
+        </td>
+      </tr>
+    </tfoot>
+    </tbody>
+  </table>
+  {{/inline}}
+{{/layout/base}}

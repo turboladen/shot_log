@@ -1,0 +1,34 @@
+{{#> layout/base title="New User Lens"}}
+  {{#*inline "container-layout"}}
+    <form action="/user_lenses" method="post">
+      <div class="field">
+        <label class="label">Lens</label>
+        <div class="select">
+          <select id="lens-list" name="lens_id">
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Serial number</label>
+        <input class="input" type="text" name="serial_number">
+      </div>
+
+      <input type="submit" class="button is-block is-info is-large" value="create">
+    </form>
+  {{/inline}}
+{{/layout/base}}
+  <script type="text/javascript">
+$(document).ready(function() {
+  $.getJSON('/lenses', function(json) {
+    $('#lens-list').empty();
+    $('#lens-list').append(
+      $('<option>').text('Select')
+    );
+
+    $.each(json, function(i, lens) {
+      $('#lens-list').append($('<option>').text(lens.brand_and_model).attr('value', lens.id));
+    });
+  });
+})
+  </script>
