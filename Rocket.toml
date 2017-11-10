@@ -1,3 +1,6 @@
 [development]
 secret_key = "FrCdWp/BVo7kGa/j1RTWzefx3ZRKg1CL5tjKBgetLyU="
 log = "normal"
+
+[production]
+secret_key = "MZwvNoCYiIO7rnd8hTMTnA2VuoW1mEiieO8iZWJqgCI="
