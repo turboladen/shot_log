@@ -49,7 +49,7 @@ fn main() {
 }
 
 fn rocket() -> Rocket {
-    // dotenv().ok();
+    dotenv().ok();
 
     let routes = routes![
         brands::index,
