@@ -1,17 +1,11 @@
 use diesel::{ExpressionMethods, JoinDsl, LoadDsl, OrderDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
-use models::cameras::{Camera, CameraDropDown};
+use models::cameras::{Camera, CameraDropDown, SerializableCamera};
 use models::users::CurrentUser;
 use rocket_contrib::{Json, Template};
 use schema::{brands, cameras};
 use super::template_contexts::ListResourcesContext;
-
-#[derive(Serialize)]
-struct FullCamera {
-    camera: Camera,
-    brand: Brand,
-}
 
 #[get("/cameras", format = "text/html")]
 fn index(current_user: CurrentUser, conn: DbConn) -> Template {
@@ -20,10 +14,10 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
         .load::<(Camera, Brand)>(&*conn)
         .expect("Error loading cameras with brands");
 
-    let full_cameras: Vec<FullCamera> = camera_vec
+    let serializable_cameras: Vec<SerializableCamera> = camera_vec
         .into_iter()
         .map(|(camera, brand)| {
-            FullCamera {
+            SerializableCamera {
                 camera: camera,
                 brand: brand,
             }
@@ -34,7 +28,7 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
         current_user: Some(current_user),
         flash: None,
         name: "Cameras",
-        resources: full_cameras,
+        resources: serializable_cameras,
     };
 
     Template::render("cameras/index", context)

@@ -1,0 +1,57 @@
+{{#> layout/base title="My Rolls"}}
+  {{#*inline "container-layout"}}
+
+  <nav class="level">
+    <div class="level-left">
+      <div class="level-item">
+        <h1 class="title">{{name}}</h1>
+      </div>
+    </div>
+  </nav>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Camera</th>
+        <th>Film Stock</th>
+        <th>Roll ID</th>
+        <th>Loaded At</th>
+        <th>Finished At</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each resources}}
+      <tr>
+        <td>{{roll.id}}</td>
+        <td>{{camera.brand.name}} {{camera.camera.model}}</td>
+        <td>{{film_stock.brand.name}} {{film_stock.film_stock.box_name}} {{film_stock.film_stock.box_speed}}</td>
+        <td>{{roll.display_id}}</td>
+        <td>{{roll.loaded_at}}</td>
+        <td>{{roll.finished_at}}</td>
+        <td>
+          <form action="/rolls/{{roll.id}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button class="button is-danger is-outlined" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+    <tfoot>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <a class="button is-link level-item" href="/rolls/new">New</a>
+        </td>
+      </tr>
+    </tfoot>
+    </tbody>
+  </table>
+  {{/inline}}
+{{/layout/base}}

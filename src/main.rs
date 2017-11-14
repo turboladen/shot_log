@@ -35,6 +35,7 @@ mod film_formats;
 mod film_stocks;
 mod home;
 mod lenses;
+mod rolls;
 mod sessions;
 mod user_cameras;
 mod user_lenses;
@@ -62,6 +63,7 @@ fn rocket() -> Rocket {
         home::files,
         lenses::index,
         lenses::index_json,
+        rolls::index,
         sessions::login_form,
         sessions::login,
         sessions::logout,

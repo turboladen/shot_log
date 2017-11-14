@@ -1,6 +1,12 @@
 use chrono::DateTime;
 use chrono::offset::Utc;
-use schema::users;
+use db_conn::DbConn;
+use diesel::*;
+use models::user_cameras::UserCamera;
+use rocket::{Outcome, State};
+use rocket::http::Status;
+use rocket::request::{self, FromRequest, Request};
+use schema::{user_cameras, users};
 use uuid::Uuid;
 
 #[derive(Identifiable, Queryable, Serialize)]
@@ -21,11 +27,14 @@ pub struct CurrentUser {
     pub updated_at: DateTime<Utc>,
 }
 
-use rocket::{Outcome, State};
-use rocket::http::Status;
-use rocket::request::{self, FromRequest, Request};
-use diesel::*;
-use db_conn::DbConn;
+impl CurrentUser {
+    pub fn user_cameras(&self, conn: &DbConn) -> Vec<UserCamera> {
+        user_cameras::table
+            .filter(user_cameras::user_id.eq(self.id))
+            .load::<UserCamera>(&**conn)
+            .expect("Error loading user cameras")
+    }
+}
 
 impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {
     type Error = ();

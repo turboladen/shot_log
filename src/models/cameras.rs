@@ -19,3 +19,9 @@ pub struct CameraDropDown {
     pub id: Uuid,
     pub brand_and_model: String,
 }
+
+#[derive(Serialize)]
+pub struct SerializableCamera {
+    pub camera: Camera,
+    pub brand: Brand,
+}

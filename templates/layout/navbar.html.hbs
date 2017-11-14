@@ -7,6 +7,7 @@
 
       <button class="button navbar-burger">
         {{ #if current_user }}
+          <span><a href="/rolls">My Rolls</a></span>
           <span><a href="/user_cameras">My Cameras</a></span>
           <span><a href="/user_lenses">My Lenses</a></span>
           <hr class="navbar-divider">
@@ -30,6 +31,7 @@
           </a>
 
           <div class="navbar-dropdown">
+            <a class="navbar-item" href="/rolls">My Rolls</a>
             <a class="navbar-item" href="/user_cameras">My Cameras</a>
             <a class="navbar-item" href="/user_lenses">My Lenses</a>
             <hr class="navbar-divider">

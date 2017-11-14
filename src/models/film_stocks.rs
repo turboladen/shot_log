@@ -17,3 +17,10 @@ pub struct FilmStock {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Serialize)]
+pub struct SerializableFilmStock {
+    pub film_stock: FilmStock,
+    pub brand: Brand,
+    pub film_format: FilmFormat,
+}
