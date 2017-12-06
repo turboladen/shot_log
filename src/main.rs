@@ -8,8 +8,7 @@ extern crate argon2rs;
 extern crate chrono;
 #[macro_use]
 extern crate diesel;
-#[macro_use]
-extern crate diesel_codegen;
+#[macro_use] extern crate diesel_infer_schema;
 extern crate dotenv;
 extern crate env_logger;
 #[macro_use]

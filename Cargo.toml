@@ -6,8 +6,8 @@ authors = ["Steve Loveless <steve@agrian.com>"]
 [dependencies]
 argon2rs = "*"
 chrono = { version = "0.4", features = ["serde"] }
-diesel = { version = "0.16", features = ["postgres", "uuid", "chrono"] }
-diesel_codegen = { version = "0.16.0", features = ["postgres"] }
+diesel = { version = "0.99", features = ["postgres", "uuid", "chrono"] }
+diesel_infer_schema = { version = "0.99", features = ["postgres"] }
 dotenv = "0.9"
 env_logger = "0.3"
 log = "0.3"

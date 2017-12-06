@@ -26,8 +26,6 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
         None => None,
     };
 
-    enable_multi_table_joins!(user_cameras, brands);
-
     let data = user_cameras::table
         .inner_join(
             brands::table
@@ -90,8 +88,8 @@ fn create(
         serial_number: uc.serial_number.clone(),
     };
 
-    match ::diesel::insert(&new_uc)
-        .into(user_cameras::table)
+    match ::diesel::insert_into(user_cameras::table)
+        .values(&new_uc)
         .execute(&*conn)
     {
         Ok(_) => Ok(Flash::success(Redirect::to("/user_cameras"), "Added")),
