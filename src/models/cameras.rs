@@ -15,7 +15,7 @@ pub struct Camera {
 }
 
 #[derive(Serialize)]
-pub struct CameraDropDown {
-    pub id: Uuid,
-    pub brand_and_model: String,
+pub struct SerializableCamera {
+    pub camera: Camera,
+    pub brand: Brand,
 }

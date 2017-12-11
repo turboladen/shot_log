@@ -1,5 +1,11 @@
 use chrono::DateTime;
 use chrono::offset::Utc;
+use db_conn::DbConn;
+use diesel::*;
+use models::user_cameras::UserCamera;
+use rocket::{Outcome, State};
+use rocket::http::Status;
+use rocket::request::{self, FromRequest, Request};
 use schema::users;
 use uuid::Uuid;
 
@@ -21,11 +27,22 @@ pub struct CurrentUser {
     pub updated_at: DateTime<Utc>,
 }
 
-use rocket::{Outcome, State};
-use rocket::http::Status;
-use rocket::request::{self, FromRequest, Request};
-use diesel::*;
-use db_conn::DbConn;
+impl CurrentUser {
+    pub fn user_cameras(&self, conn: &DbConn) -> Vec<UserCamera> {
+        UserCamera::belonging_to(self)
+            .get_results::<UserCamera>(&**conn)
+            .expect("Couldn't find associated user cameras")
+    }
+
+    pub fn user_camera_ids(&self, conn: &DbConn) -> Vec<Uuid> {
+        use schema::user_cameras::dsl::id as user_camera_id;
+
+        UserCamera::belonging_to(self)
+            .select(user_camera_id)
+            .load::<Uuid>(&**conn)
+            .expect("Couldn't find associated user cameras")
+    }
+}
 
 impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {
     type Error = ();

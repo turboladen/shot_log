@@ -1,4 +1,4 @@
-{{#> layout/base title="My Lenses"}}
+{{#> layout/base title="My Rolls"}}
   {{#*inline "container-layout"}}
 
   <nav class="level">
@@ -13,21 +13,25 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Brand</th>
-        <th>Model</th>
-        <th>Serial number</th>
+        <th>Camera</th>
+        <th>Film Stock</th>
+        <th>Roll ID</th>
+        <th>Loaded At</th>
+        <th>Finished At</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
     {{#each resources}}
       <tr>
-        <td>{{user_lens.id}}</td>
-        <td>{{brand.name}}</td>
-        <td>{{lens.model}}</td>
-        <td>{{user_lens.serial_number}}</td>
+        <td>{{roll.id}}</td>
+        <td>{{camera.brand.name}} {{camera.camera.model}}</td>
+        <td>{{film_stock.brand.name}} {{film_stock.film_stock.box_name}} {{film_stock.film_stock.box_speed}}</td>
+        <td>{{roll.display_id}}</td>
+        <td>{{roll.loaded_at}}</td>
+        <td>{{roll.finished_at}}</td>
         <td>
-          <form action="/user_lenses/{{user_lens.id}}" method="post">
+          <form action="/rolls/{{roll.id}}" method="post">
             <input type="hidden" name="_method" value="DELETE">
             <button class="button is-danger is-outlined" type="submit">Delete</button>
           </form>
@@ -40,8 +44,10 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
+        <td></td>
         <td>
-          <a class="button is-link level-item" href="/user_lenses/new">New</a>
+          <a class="button is-link level-item" href="/rolls/new">New</a>
         </td>
       </tr>
     </tfoot>

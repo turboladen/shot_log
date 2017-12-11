@@ -1,5 +1,5 @@
 use rocket_contrib::Template;
-use diesel::{ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, JoinOnDsl, LoadDsl};
+use diesel::{BelongingToDsl, ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, JoinOnDsl, LoadDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
 use models::lenses::Lens;
@@ -26,15 +26,12 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
         None => None,
     };
 
-    enable_multi_table_joins!(user_lenses, brands);
-
-    let data = user_lenses::table
+    let data = UserLens::belonging_to(&current_user)
         .inner_join(
             brands::table
                 .inner_join(lenses::table.on(lenses::brand_id.eq(brands::id)))
                 .on(user_lenses::lens_id.eq(lenses::id)),
         )
-        .filter(user_lenses::user_id.eq(&current_user.id))
         .load::<(UserLens, (Brand, Lens))>(&*conn)
         .expect("Error loading user lenses");
 
@@ -89,8 +86,8 @@ fn create(
         serial_number: uc.serial_number.clone(),
     };
 
-    match ::diesel::insert(&new_uc)
-        .into(user_lenses::table)
+    match ::diesel::insert_into(user_lenses::table)
+        .values(&new_uc)
         .execute(&*conn)
     {
         Ok(_) => Ok(Flash::success(Redirect::to("/user_lenses"), "Added")),

@@ -47,8 +47,8 @@ fn create(
         password_hash: hashed_password,
     };
 
-    let user: User = ::diesel::insert(&user)
-        .into(users::table)
+    let user: User = ::diesel::insert_into(users::table)
+        .values(&user)
         .get_result(&*conn)
         .expect("Error saving new user");
 

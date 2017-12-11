@@ -1,22 +1,23 @@
 use r2d2;
+use diesel::PgConnection;
 use r2d2_diesel::ConnectionManager;
-use diesel::pg::PgConnection;
-use std::ops::Deref;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
 use rocket::{Outcome, Request, State};
-
-// // An alias to the type for a pool of Diesel SQLite connections.
-pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
+use std::ops::Deref;
 
 // // The URL to the database, set via the `DATABASE_URL` environment variable.
 static DATABASE_URL: &'static str = env!("DATABASE_URL");
 
+// // An alias to the type for a pool of Diesel PG connections.
+pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
+
 // /// Initializes a database pool.
 pub fn init_pool() -> Pool {
-    let config = r2d2::Config::default();
     let manager = ConnectionManager::<PgConnection>::new(DATABASE_URL);
-    r2d2::Pool::new(config, manager).expect("db pool")
+    r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.")
 }
 
 // Connection request guard type: a wrapper around an r2d2 pooled connection.

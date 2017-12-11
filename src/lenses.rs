@@ -1,10 +1,11 @@
 use diesel::{ExpressionMethods, JoinDsl, LoadDsl, OrderDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
-use models::lenses::{Lens, LensDropDown};
+use models::lenses::Lens;
 use models::users::CurrentUser;
 use rocket_contrib::{Json, Template};
 use schema::{brands, lenses};
+use serializables::DropDown;
 use super::template_contexts::ListResourcesContext;
 
 #[derive(Serialize)]
@@ -41,7 +42,7 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 }
 
 #[get("/lenses", format = "application/json")]
-fn index_json(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<LensDropDown>> {
+fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     use schema::brands::dsl::name as brand_name;
     use schema::lenses::dsl::model as lens_model;
 
@@ -51,14 +52,14 @@ fn index_json(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<LensDropDown
         .load::<(Lens, Brand)>(&*conn)
         .expect("Error loading lenses with brands");
 
-    let lens_drop_downs: Vec<LensDropDown> = lens_vec
+    let lens_drop_downs: Vec<DropDown> = lens_vec
         .into_iter()
         .map(|(lens, brand)| {
             let brand_and_model = format!("{} {}", brand.name, lens.model);
 
-            LensDropDown {
+            DropDown {
                 id: lens.id,
-                brand_and_model: brand_and_model,
+                label: brand_and_model,
             }
         })
         .collect();
