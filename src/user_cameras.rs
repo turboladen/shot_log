@@ -1,5 +1,5 @@
 use rocket_contrib::{Json, Template};
-use diesel::{ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, JoinOnDsl, LoadDsl};
+use diesel::{BelongingToDsl, ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, JoinOnDsl, LoadDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
 use models::cameras::Camera;
@@ -27,13 +27,12 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
         None => None,
     };
 
-    let data = user_cameras::table
+    let data = UserCamera::belonging_to(&current_user)
         .inner_join(
             brands::table
                 .inner_join(cameras::table.on(cameras::brand_id.eq(brands::id)))
                 .on(user_cameras::camera_id.eq(cameras::id)),
         )
-        .filter(user_cameras::user_id.eq(&current_user.id))
         .load::<(UserCamera, (Brand, Camera))>(&*conn)
         .expect("Error loading user cameras");
 

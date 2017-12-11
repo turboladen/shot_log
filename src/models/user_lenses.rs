@@ -1,7 +1,7 @@
 use chrono::DateTime;
 use chrono::offset::Utc;
 use models::lenses::Lens;
-use models::users::User;
+use models::users::{CurrentUser, User};
 use rocket_contrib::UUID;
 use schema::user_lenses;
 use uuid::Uuid;
@@ -9,6 +9,7 @@ use uuid::Uuid;
 #[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Lens)]
 #[belongs_to(User)]
+#[belongs_to(CurrentUser, foreign_key = "user_id")]
 #[table_name = "user_lenses"]
 pub struct UserLens {
     pub id: Uuid,
