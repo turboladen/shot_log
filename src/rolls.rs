@@ -91,9 +91,9 @@ fn create(
     let uc_id: Uuid = *form.user_camera_id;
     let display_id = form.display_id.clone();
     let loaded_at = &form.loaded_at;
-    let finished_at = match &form.finished_at {
-        &Some(ref fa) => Some(fa.0),
-        &None => None,
+    let finished_at = match form.finished_at {
+        Some(ref fa) => Some(fa.0),
+        None => None,
     };
 
     let new_roll = NewRoll {

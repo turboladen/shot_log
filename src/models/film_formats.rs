@@ -28,11 +28,11 @@ pub fn for_display(
     stock_size_value: &Option<f64>,
     stock_size_unit: &Option<String>,
 ) -> String {
-    match stock_size_value {
-        &None => designation.to_string(),
-        &Some(value) => match stock_size_unit {
-            &None => value.to_string(),
-            &Some(ref unit) => format!("{}{}", value, unit),
+    match *stock_size_value {
+        None => designation.to_string(),
+        Some(value) => match *stock_size_unit {
+            None => value.to_string(),
+            Some(ref unit) => format!("{}{}", value, unit),
         },
     }
 }
