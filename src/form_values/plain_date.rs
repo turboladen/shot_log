@@ -10,18 +10,18 @@ impl<'v> FromFormValue<'v> for PlainDate {
 
     fn from_form_value(form_value: &'v RawStr) -> Result<PlainDate, &'v RawStr> {
         if form_value.len() > 14 {
-            return Err(build_error())
+            return Err(build_error());
         }
 
-        let date_string = form_value.percent_decode()
+        let date_string = form_value
+            .percent_decode()
             .map_err(|_| "Unable to decode date string")?;
 
         let trimmed = date_string.trim();
 
         let naive_date = try_year_first_with_dashes(trimmed)
             .or_else(|_| try_year_first_with_slashes(trimmed))
-            .or_else(|_| try_month_first_with_slashes(trimmed))
-            ;
+            .or_else(|_| try_month_first_with_slashes(trimmed));
 
         match naive_date {
             Ok(nd) => Ok(PlainDate(nd)),

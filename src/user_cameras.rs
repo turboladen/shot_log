@@ -74,7 +74,7 @@ fn drop_down(current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
 
             DropDown {
                 id: uc.id,
-                label: label
+                label: label,
             }
         })
         .collect();

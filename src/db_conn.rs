@@ -15,7 +15,9 @@ pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 // /// Initializes a database pool.
 pub fn init_pool() -> Pool {
     let manager = ConnectionManager::<PgConnection>::new(DATABASE_URL);
-    r2d2::Pool::builder().build(manager).expect("Failed to create pool.")
+    r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.")
 }
 
 // Connection request guard type: a wrapper around an r2d2 pooled connection.

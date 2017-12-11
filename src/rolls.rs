@@ -31,7 +31,8 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
 
     let uc_ids = current_user.user_camera_ids(&conn);
 
-    let joined_rolls = rolls.inner_join(user_cameras::table)
+    let joined_rolls = rolls
+        .inner_join(user_cameras::table)
         .inner_join(film_stocks::table)
         .filter(user_camera_id.eq_any(&uc_ids))
         .load::<(Roll, UserCamera, FilmStock)>(&*conn)
@@ -92,7 +93,7 @@ fn create(
     let loaded_at = &form.loaded_at;
     let finished_at = match &form.finished_at {
         &Some(ref fa) => Some(fa.0),
-        &None => None
+        &None => None,
     };
 
     let new_roll = NewRoll {
@@ -108,10 +109,7 @@ fn create(
         .execute(&*conn)
     {
         Ok(_) => Ok(Flash::success(Redirect::to("/rolls"), "Added")),
-        Err(err) => Err(Flash::error(
-            Redirect::to("/rolls/new"),
-            err.to_string(),
-        )),
+        Err(err) => Err(Flash::error(Redirect::to("/rolls/new"), err.to_string())),
     }
 }
 

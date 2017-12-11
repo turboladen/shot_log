@@ -1,7 +1,7 @@
 use diesel::{JoinDsl, LoadDsl, SelectDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
-use models::film_formats::{FilmFormat, for_display};
+use models::film_formats::{for_display, FilmFormat};
 use models::film_stocks::{FilmStock, SerializableFilmStock};
 use models::users::CurrentUser;
 use rocket_contrib::{Json, Template};
@@ -44,27 +44,43 @@ fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     let joined_film_stocks = film_stocks::table
         .inner_join(brands::table)
         .inner_join(film_formats::table)
-        .select((film_stocks::id, film_stocks::box_name, film_stocks::box_speed, brands::name, film_formats::designation, film_formats::stock_size_value, film_formats::stock_size_unit))
-        .load::<(Uuid, String, Option<i32>, String, String, Option<f64>, Option<String>)>(&*conn)
+        .select((
+            film_stocks::id,
+            film_stocks::box_name,
+            film_stocks::box_speed,
+            brands::name,
+            film_formats::designation,
+            film_formats::stock_size_value,
+            film_formats::stock_size_unit,
+        ))
+        .load::<(
+            Uuid,
+            String,
+            Option<i32>,
+            String,
+            String,
+            Option<f64>,
+            Option<String>,
+        )>(&*conn)
         .expect("Error loading film stocks with associations");
 
     let film_stock_drop_downs: Vec<DropDown> = joined_film_stocks
         .into_iter()
-        .map(|(id, box_name, box_speed, brand_name, ff_designation, ff_ss_value, ff_ss_unit)| {
-            let mut label = format!("{} {}", brand_name, box_name);
+        .map(
+            |(id, box_name, box_speed, brand_name, ff_designation, ff_ss_value, ff_ss_unit)| {
+                let mut label = format!("{} {}", brand_name, box_name);
 
-            box_speed.and_then(|bs| {
-                Some(label.push_str(&format!(" {}", bs)))
-            });
+                box_speed.and_then(|bs| Some(label.push_str(&format!(" {}", bs))));
 
-            let ff_display = for_display(&ff_designation, &ff_ss_value, &ff_ss_unit);
-            label.push_str(&format!(" ({}/{})", ff_designation, ff_display));
+                let ff_display = for_display(&ff_designation, &ff_ss_value, &ff_ss_unit);
+                label.push_str(&format!(" ({}/{})", ff_designation, ff_display));
 
-            DropDown {
-                id: id,
-                label: label,
-            }
-        })
+                DropDown {
+                    id: id,
+                    label: label,
+                }
+            },
+        )
         .collect();
 
     Json(film_stock_drop_downs)
