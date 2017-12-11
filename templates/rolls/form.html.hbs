@@ -1,0 +1,77 @@
+{{#> layout/base title="New Roll"}}
+  {{#*inline "container-layout"}}
+    <form action="/rolls" method="post">
+      <div class="field">
+        <label class="label">Display ID</label>
+        <div class="control">
+          <input class="input" type="text" name="display_id">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Camera</label>
+        <div class="control">
+          <div class="select">
+            <select id="user-camera-list" name="user_camera_id">
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Film Stock</label>
+        <div class="control">
+          <div class="select">
+            <select id="film-stock-list" name="film_stock_id">
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Date loaded</label>
+        <div class="control">
+          <input class="input" type="text" name="loaded_at">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Date finished</label>
+        <div class="control">
+          <input class="input" type="text" name="finished_at">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <input type="submit" class="button is-block is-info is-large" value="create">
+        </div>
+      </div>
+    </form>
+  {{/inline}}
+{{/layout/base}}
+  <script type="text/javascript">
+$(document).ready(function() {
+  $.getJSON('/user_cameras', function(json) {
+    $('#user-camera-list').empty();
+    $('#user-camera-list').append(
+      $('<option>').text('Select')
+    );
+
+    $.each(json, function(i, film_stock) {
+      $('#user-camera-list').append($('<option>').text(film_stock.label).attr('value', film_stock.id));
+    });
+  });
+
+  $.getJSON('/film_stocks', function(json) {
+    $('#film-stock-list').empty();
+    $('#film-stock-list').append(
+      $('<option>').text('Select')
+    );
+
+    $.each(json, function(i, film_stock) {
+      $('#film-stock-list').append($('<option>').text(film_stock.label).attr('value', film_stock.id));
+    });
+  });
+})
+  </script>

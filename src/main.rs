@@ -32,9 +32,11 @@ mod brands;
 mod cameras;
 mod film_formats;
 mod film_stocks;
+mod form_values;
 mod home;
 mod lenses;
 mod rolls;
+mod serializables;
 mod sessions;
 mod user_cameras;
 mod user_lenses;
@@ -57,18 +59,22 @@ fn rocket() -> Rocket {
         cameras::drop_down,
         film_formats::index,
         film_stocks::index,
+        film_stocks::drop_down,
         home::index,
         home::index_no_user,
         home::files,
         lenses::index,
         lenses::drop_down,
         rolls::index,
+        rolls::new,
+        rolls::create,
         sessions::login_form,
         sessions::login,
         sessions::logout,
         users::new,
         users::create,
         user_cameras::index,
+        user_cameras::drop_down,
         user_cameras::new,
         user_cameras::create,
         user_cameras::destroy,

@@ -1,11 +1,12 @@
-use rocket_contrib::Template;
 use diesel::{JoinDsl, LoadDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
 use models::film_formats::FilmFormat;
 use models::film_stocks::{FilmStock, SerializableFilmStock};
 use models::users::CurrentUser;
+use rocket_contrib::{Json, Template};
 use schema::{brands, film_formats, film_stocks};
+use serializables::DropDown;
 use super::template_contexts::ListResourcesContext;
 
 #[get("/film_stocks", format = "text/html")]
@@ -41,4 +42,40 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     };
 
     Template::render("film_stocks/index", context)
+}
+
+#[get("/film_stocks", format = "application/json")]
+fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
+    let fsb_vec = film_stocks::table
+        .inner_join(brands::table)
+        .load::<(FilmStock, Brand)>(&*conn)
+        .expect("Error loading film stocks with brands");
+
+    let fsff_vec = film_stocks::table
+        .inner_join(film_formats::table)
+        .load::<(FilmStock, FilmFormat)>(&*conn)
+        .expect("Error loading film stocks with film formats");
+
+    let film_stock_drop_downs: Vec<DropDown> = fsb_vec
+        .into_iter()
+        .zip(fsff_vec)
+        .map(|((fs1, b), (fs2, ff))| {
+            assert_eq!(fs1.id, fs2.id, "Got mismatched film stocks");
+
+            let mut label = format!("{} {}", b.name, fs1.box_name);
+
+            fs1.box_speed.and_then(|bs| {
+                Some(label.push_str(&format!(" {}", bs)))
+            });
+
+            label.push_str(&format!(" ({}/{})", ff.designation, ff.for_display()));
+
+            DropDown {
+                id: fs1.id,
+                label: label,
+            }
+        })
+        .collect();
+
+    Json(film_stock_drop_downs)
 }
