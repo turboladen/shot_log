@@ -33,6 +33,15 @@ impl CurrentUser {
             .get_results::<UserCamera>(&**conn)
             .expect("Couldn't find associated user cameras")
     }
+
+    pub fn user_camera_ids(&self, conn: &DbConn) -> Vec<Uuid> {
+        use schema::user_cameras::dsl::id as user_camera_id;
+
+        UserCamera::belonging_to(self)
+            .select(user_camera_id)
+            .load::<Uuid>(&**conn)
+            .expect("Couldn't find associated user cameras")
+    }
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {

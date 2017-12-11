@@ -29,8 +29,7 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
         None => None,
     };
 
-    let user_cameras = current_user.user_cameras(&conn);
-    let uc_ids: Vec<Uuid> = user_cameras.iter().map(|uc| uc.id).collect();
+    let uc_ids = current_user.user_camera_ids(&conn);
 
     let roll_ucs = rolls.inner_join(user_cameras::table)
         .filter(user_camera_id.eq_any(&uc_ids))
