@@ -31,26 +31,20 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
 
     let uc_ids = current_user.user_camera_ids(&conn);
 
-    let roll_ucs = rolls.inner_join(user_cameras::table)
+    let joined_rolls = rolls.inner_join(user_cameras::table)
+        .inner_join(film_stocks::table)
         .filter(user_camera_id.eq_any(&uc_ids))
-        .load::<(Roll, UserCamera)>(&*conn)
-        .expect("Couldn't load rolls");
+        .load::<(Roll, UserCamera, FilmStock)>(&*conn)
+        .expect("Couldn't load rolls with joins");
 
-    let roll_fss = rolls.inner_join(film_stocks::table)
-        .filter(user_camera_id.eq_any(&uc_ids))
-        .load::<(Roll, FilmStock)>(&*conn)
-        .expect("Couldn't load rolls");
-
-    let full_rolls = roll_ucs
+    let full_rolls = joined_rolls
         .into_iter()
-        .zip(roll_fss)
-        .map(|((roll0, uc), (roll1, fs))| {
-            assert_eq!(roll0.id, roll1.id);
+        .map(|(roll, uc, fs)| {
             let serializable_film_stock = build_serializable_film_stock(fs, &conn);
             let serializable_camera = build_serializable_camera(uc.camera_id, &conn);
 
             FullRoll {
-                roll: roll0,
+                roll: roll,
                 film_stock: serializable_film_stock,
                 camera: serializable_camera,
             }
