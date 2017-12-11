@@ -3,18 +3,26 @@
     <form action="/user_lenses" method="post">
       <div class="field">
         <label class="label">Lens</label>
-        <div class="select">
-          <select id="lens-list" name="lens_id">
-          </select>
+        <div class="control">
+          <div class="select">
+            <select id="lens-list" name="lens_id">
+            </select>
+          </div>
         </div>
       </div>
 
       <div class="field">
         <label class="label">Serial number</label>
-        <input class="input" type="text" name="serial_number">
+        <div class="control">
+          <input class="input" type="text" name="serial_number">
+        </div>
       </div>
 
-      <input type="submit" class="button is-block is-info is-large" value="create">
+      <div class="field">
+        <div class="control">
+          <input type="submit" class="button is-block is-info is-large" value="create">
+        </div>
+      </div>
     </form>
   {{/inline}}
 {{/layout/base}}
@@ -27,7 +35,7 @@ $(document).ready(function() {
     );
 
     $.each(json, function(i, lens) {
-      $('#lens-list').append($('<option>').text(lens.brand_and_model).attr('value', lens.id));
+      $('#lens-list').append($('<option>').text(lens.label).attr('value', lens.id));
     });
   });
 })

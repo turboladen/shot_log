@@ -3,23 +3,33 @@
     <form action="/user_cameras" method="post">
       <div class="field">
         <label class="label">Camera</label>
-        <div class="select">
-          <select id="camera-list" name="camera_id">
-          </select>
+        <div class="control">
+          <div class="select">
+            <select id="camera-list" name="camera_id">
+            </select>
+          </div>
         </div>
       </div>
 
       <div class="field">
         <label class="label">Roll prefix</label>
-        <input class="input" type="text" name="roll_prefix">
+        <div class="control">
+          <input class="input" type="text" name="roll_prefix">
+        </div>
       </div>
 
       <div class="field">
         <label class="label">Serial number</label>
-        <input class="input" type="text" name="serial_number">
+        <div class="control">
+          <input class="input" type="text" name="serial_number">
+        </div>
       </div>
 
-      <input type="submit" class="button is-block is-info is-large" value="create">
+      <div class="field">
+        <div class="control">
+          <input type="submit" class="button is-block is-info is-large" value="create">
+        </div>
+      </div>
     </form>
   {{/inline}}
 {{/layout/base}}
