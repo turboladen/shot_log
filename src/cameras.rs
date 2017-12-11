@@ -1,10 +1,11 @@
 use diesel::{ExpressionMethods, JoinDsl, LoadDsl, OrderDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
-use models::cameras::{Camera, CameraDropDown, SerializableCamera};
+use models::cameras::{Camera, SerializableCamera};
 use models::users::CurrentUser;
 use rocket_contrib::{Json, Template};
 use schema::{brands, cameras};
+use serializables::DropDown;
 use super::template_contexts::ListResourcesContext;
 
 #[get("/cameras", format = "text/html")]
@@ -35,7 +36,7 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 }
 
 #[get("/cameras", format = "application/json")]
-fn index_json(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<CameraDropDown>> {
+fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     use schema::brands::dsl::name as brand_name;
     use schema::cameras::dsl::model as camera_model;
 
@@ -45,14 +46,14 @@ fn index_json(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<CameraDropDo
         .load::<(Camera, Brand)>(&*conn)
         .expect("Error loading cameras with brands");
 
-    let camera_drop_downs: Vec<CameraDropDown> = camera_vec
+    let camera_drop_downs: Vec<DropDown> = camera_vec
         .into_iter()
         .map(|(camera, brand)| {
             let brand_and_model = format!("{} {}", brand.name, camera.model);
 
-            CameraDropDown {
+            DropDown {
                 id: camera.id,
-                brand_and_model: brand_and_model,
+                label: brand_and_model,
             }
         })
         .collect();
