@@ -6,7 +6,7 @@ use models::user_cameras::UserCamera;
 use rocket::{Outcome, State};
 use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
-use schema::{user_cameras, users};
+use schema::users;
 use uuid::Uuid;
 
 #[derive(Identifiable, Queryable, Serialize)]
@@ -29,10 +29,9 @@ pub struct CurrentUser {
 
 impl CurrentUser {
     pub fn user_cameras(&self, conn: &DbConn) -> Vec<UserCamera> {
-        user_cameras::table
-            .filter(user_cameras::user_id.eq(self.id))
-            .load::<UserCamera>(&**conn)
-            .expect("Error loading user cameras")
+        UserCamera::belonging_to(self)
+            .get_results::<UserCamera>(&**conn)
+            .expect("Couldn't find associated user cameras")
     }
 }
 
