@@ -1,9 +1,9 @@
+use super::template_contexts::{EmptyResourceContext, FlashContext};
 use models::users::CurrentUser;
 use rocket::request::FlashMessage;
 use rocket::response::NamedFile;
 use rocket_contrib::Template;
 use std::path::{Path, PathBuf};
-use super::template_contexts::{EmptyResourceContext, FlashContext};
 
 #[get("/", format = "text/html")]
 fn index(current_user: CurrentUser) -> Template {

@@ -1,3 +1,4 @@
+use super::template_contexts::{EmptyResourceContext, FlashContext};
 use db_conn::DbConn;
 use diesel::*;
 use models::users::{CurrentUser, LoginUser, User};
@@ -6,7 +7,6 @@ use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
 use schema::users::table as users;
-use super::template_contexts::{EmptyResourceContext, FlashContext};
 
 #[get("/login")]
 fn login_form(flash: Option<FlashMessage>) -> Template {
@@ -59,10 +59,10 @@ fn logout(_current_user: CurrentUser, mut cookies: Cookies) -> Flash<Redirect> {
 
 #[cfg(test)]
 mod tests {
+    use super::super::models::users::test::build_test_user;
     use rocket::http::ContentType;
     use rocket::http::Status;
     use rocket::local::Client;
-    use super::super::models::users::test::build_test_user;
 
     #[test]
     fn test_login_good() {
@@ -70,8 +70,7 @@ mod tests {
         let client = Client::new(super::super::rocket()).expect("valid rocket instance");
         let body = format!(
             "email={}&password={:?}",
-            test_user.email,
-            test_user.password
+            test_user.email, test_user.password
         );
 
         let response = client

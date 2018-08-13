@@ -1,5 +1,5 @@
-use chrono::DateTime;
 use chrono::offset::Utc;
+use chrono::DateTime;
 use models::cameras::Camera;
 use models::users::{CurrentUser, User};
 use rocket_contrib::UUID;

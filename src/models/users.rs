@@ -1,11 +1,11 @@
-use chrono::DateTime;
 use chrono::offset::Utc;
+use chrono::DateTime;
 use db_conn::DbConn;
 use diesel::*;
 use models::user_cameras::UserCamera;
-use rocket::{Outcome, State};
 use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
+use rocket::{Outcome, State};
 use schema::users;
 use uuid::Uuid;
 
@@ -108,11 +108,11 @@ pub struct UserToSave {
 
 #[cfg(test)]
 pub mod test {
-    use chrono::DateTime;
-    use chrono::offset::Utc;
-    use diesel::RunQueryDsl;
     use super::super::super::db_conn;
     use super::super::super::models::users::{User, UserToSave};
+    use chrono::offset::Utc;
+    use chrono::DateTime;
+    use diesel::RunQueryDsl;
     use uuid::Uuid;
 
     static TEST_USER_EMAIL: &'static str = "test@shot_log.com";

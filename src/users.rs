@@ -1,3 +1,4 @@
+use super::template_contexts::FlashContext;
 use argon2rs::argon2d_simple;
 use db_conn::DbConn;
 use diesel::RunQueryDsl;
@@ -8,7 +9,6 @@ use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
 use schema::users;
 use std::env;
-use super::template_contexts::FlashContext;
 
 #[get("/users/new")]
 fn new(flash: Option<FlashMessage>) -> Template {

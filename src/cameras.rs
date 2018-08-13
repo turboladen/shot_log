@@ -1,12 +1,12 @@
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
+use super::template_contexts::ListResourcesContext;
 use db_conn::DbConn;
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::cameras::{Camera, SerializableCamera};
 use models::users::CurrentUser;
 use rocket_contrib::{Json, Template};
 use schema::{brands, cameras};
 use serializables::DropDown;
-use super::template_contexts::ListResourcesContext;
 
 #[get("/cameras", format = "text/html")]
 fn index(current_user: CurrentUser, conn: DbConn) -> Template {
@@ -17,11 +17,9 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 
     let serializable_cameras: Vec<SerializableCamera> = camera_vec
         .into_iter()
-        .map(|(camera, brand)| {
-            SerializableCamera {
-                camera: camera,
-                brand: brand,
-            }
+        .map(|(camera, brand)| SerializableCamera {
+            camera: camera,
+            brand: brand,
         })
         .collect();
 

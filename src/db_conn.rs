@@ -1,5 +1,5 @@
-use r2d2;
 use diesel::PgConnection;
+use r2d2;
 use r2d2_diesel::ConnectionManager;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};

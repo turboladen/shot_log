@@ -1,18 +1,18 @@
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
+use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
 use db_conn::DbConn;
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::cameras::{Camera, SerializableCamera};
 use models::film_formats::FilmFormat;
 use models::film_stocks::{FilmStock, SerializableFilmStock};
-use models::users::CurrentUser;
 use models::rolls::{NewRoll, Roll, RollForm};
 use models::user_cameras::UserCamera;
+use models::users::CurrentUser;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
-use schema::{brands, cameras, film_formats, film_stocks, user_cameras};
 use schema::rolls::dsl::{rolls, user_camera_id};
-use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
+use schema::{brands, cameras, film_formats, film_stocks, user_cameras};
 use uuid::Uuid;
 
 #[derive(Serialize)]

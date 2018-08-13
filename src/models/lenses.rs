@@ -1,8 +1,8 @@
-use chrono::DateTime;
 use chrono::offset::Utc;
+use chrono::DateTime;
 use models::brands::Brand;
-use uuid::Uuid;
 use schema::lenses;
+use uuid::Uuid;
 
 #[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Brand)]

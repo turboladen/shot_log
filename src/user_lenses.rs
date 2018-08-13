@@ -1,15 +1,15 @@
-use rocket_contrib::Template;
-use diesel::{BelongingToDsl, ExpressionMethods, JoinOnDsl, QueryDsl, RunQueryDsl};
+use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
 use db_conn::DbConn;
+use diesel::{BelongingToDsl, ExpressionMethods, JoinOnDsl, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::lenses::Lens;
 use models::user_lenses::{NewUserLens, UserLens, UserLensForm};
 use models::users::CurrentUser;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
+use rocket_contrib::Template;
 use rocket_contrib::UUID;
 use schema::{brands, lenses, user_lenses};
-use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
 use uuid::Uuid;
 
 #[derive(Serialize)]
@@ -35,13 +35,12 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
         .load::<(UserLens, (Brand, Lens))>(&*conn)
         .expect("Error loading user lenses");
 
-    let full_user_lenses: Vec<FullUserLens> = data.into_iter()
-        .map(|(uc, (brand, lens))| {
-            FullUserLens {
-                user_lens: uc,
-                lens: lens,
-                brand: brand,
-            }
+    let full_user_lenses: Vec<FullUserLens> = data
+        .into_iter()
+        .map(|(uc, (brand, lens))| FullUserLens {
+            user_lens: uc,
+            lens: lens,
+            brand: brand,
         })
         .collect();
 

@@ -1,12 +1,12 @@
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
+use super::template_contexts::ListResourcesContext;
 use db_conn::DbConn;
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::lenses::Lens;
 use models::users::CurrentUser;
 use rocket_contrib::{Json, Template};
 use schema::{brands, lenses};
 use serializables::DropDown;
-use super::template_contexts::ListResourcesContext;
 
 #[derive(Serialize)]
 struct FullLens {
@@ -23,11 +23,9 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 
     let full_lenses: Vec<FullLens> = lens_vec
         .into_iter()
-        .map(|(lens, brand)| {
-            FullLens {
-                lens: lens,
-                brand: brand,
-            }
+        .map(|(lens, brand)| FullLens {
+            lens: lens,
+            brand: brand,
         })
         .collect();
 

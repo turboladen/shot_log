@@ -22,10 +22,10 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-pub mod template_contexts;
-pub mod schema;
-pub mod models;
 mod db_conn;
+pub mod models;
+pub mod schema;
+pub mod template_contexts;
 
 mod brands;
 mod cameras;
@@ -42,8 +42,8 @@ mod user_lenses;
 mod users;
 
 use dotenv::dotenv;
-use rocket_contrib::Template;
 use rocket::Rocket;
+use rocket_contrib::Template;
 
 fn main() {
     rocket().launch();

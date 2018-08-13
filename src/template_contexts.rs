@@ -1,7 +1,7 @@
+use super::models::users::CurrentUser;
 use rocket::request::FlashMessage;
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::hash::{Hash, Hasher};
-use super::models::users::CurrentUser;
 
 pub struct FlashContext {
     pub flash_message: FlashMessage,

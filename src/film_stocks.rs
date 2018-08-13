@@ -1,3 +1,4 @@
+use super::template_contexts::ListResourcesContext;
 use db_conn::DbConn;
 use diesel::{QueryDsl, RunQueryDsl};
 use models::brands::Brand;
@@ -7,7 +8,6 @@ use models::users::CurrentUser;
 use rocket_contrib::{Json, Template};
 use schema::{brands, film_formats, film_stocks};
 use serializables::DropDown;
-use super::template_contexts::ListResourcesContext;
 use uuid::Uuid;
 
 #[get("/film_stocks", format = "text/html")]
@@ -20,12 +20,10 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 
     let serializable_film_stocks = joined_film_stocks
         .into_iter()
-        .map(|(fs, b, ff)| {
-            SerializableFilmStock {
-                film_stock: fs,
-                brand: b,
-                film_format: ff,
-            }
+        .map(|(fs, b, ff)| SerializableFilmStock {
+            film_stock: fs,
+            brand: b,
+            film_format: ff,
         })
         .collect();
 

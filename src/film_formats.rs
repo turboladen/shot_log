@@ -1,10 +1,10 @@
+use super::template_contexts::ListResourcesContext;
 use db_conn::DbConn;
 use diesel::RunQueryDsl;
 use models::film_formats::FilmFormat;
 use models::users::CurrentUser;
 use rocket_contrib::Template;
 use schema::film_formats;
-use super::template_contexts::ListResourcesContext;
 
 #[get("/film_formats", format = "text/html")]
 fn index(current_user: CurrentUser, conn: DbConn) -> Template {

@@ -1,6 +1,6 @@
-use rocket_contrib::{Json, Template};
-use diesel::{BelongingToDsl, ExpressionMethods, JoinOnDsl, QueryDsl, RunQueryDsl};
+use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
 use db_conn::DbConn;
+use diesel::{BelongingToDsl, ExpressionMethods, JoinOnDsl, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::cameras::Camera;
 use models::user_cameras::{NewUserCamera, UserCamera, UserCameraForm};
@@ -8,9 +8,9 @@ use models::users::CurrentUser;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::UUID;
+use rocket_contrib::{Json, Template};
 use schema::{brands, cameras, user_cameras};
 use serializables::DropDown;
-use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
 use uuid::Uuid;
 
 #[derive(Serialize)]
@@ -36,13 +36,12 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
         .load::<(UserCamera, (Brand, Camera))>(&*conn)
         .expect("Error loading user cameras");
 
-    let full_user_cameras: Vec<FullUserCamera> = data.into_iter()
-        .map(|(uc, (brand, camera))| {
-            FullUserCamera {
-                user_camera: uc,
-                camera: camera,
-                brand: brand,
-            }
+    let full_user_cameras: Vec<FullUserCamera> = data
+        .into_iter()
+        .map(|(uc, (brand, camera))| FullUserCamera {
+            user_camera: uc,
+            camera: camera,
+            brand: brand,
         })
         .collect();
 
@@ -68,7 +67,8 @@ fn drop_down(current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
         .load::<(UserCamera, (Brand, Camera))>(&*conn)
         .expect("Error loading user cameras");
 
-    let user_camera_dropdowns: Vec<DropDown> = data.into_iter()
+    let user_camera_dropdowns: Vec<DropDown> = data
+        .into_iter()
         .map(|(uc, (brand, camera))| {
             let label = format!("{} {}", brand.name, camera.model);
 

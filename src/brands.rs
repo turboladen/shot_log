@@ -1,10 +1,10 @@
+use super::template_contexts::ListResourcesContext;
 use db_conn::DbConn;
 use diesel::RunQueryDsl;
 use models::brands::Brand;
 use models::users::CurrentUser;
 use rocket_contrib::Template;
 use schema::brands;
-use super::template_contexts::ListResourcesContext;
 
 #[get("/brands", format = "text/html")]
 fn index(current_user: CurrentUser, conn: DbConn) -> Template {

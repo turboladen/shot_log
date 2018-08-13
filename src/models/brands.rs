@@ -1,7 +1,7 @@
-use chrono::DateTime;
 use chrono::offset::Utc;
-use uuid::Uuid;
+use chrono::DateTime;
 use schema::brands;
+use uuid::Uuid;
 
 #[derive(Associations, Identifiable, Queryable, Serialize)]
 pub struct Brand {
