@@ -1,4 +1,4 @@
-use diesel::{ExpressionMethods, JoinDsl, LoadDsl, OrderDsl};
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
 use models::cameras::{Camera, SerializableCamera};

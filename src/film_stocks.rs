@@ -1,5 +1,5 @@
-use diesel::{JoinDsl, LoadDsl, SelectDsl};
 use db_conn::DbConn;
+use diesel::{QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::film_formats::{for_display, FilmFormat};
 use models::film_stocks::{FilmStock, SerializableFilmStock};

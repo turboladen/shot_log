@@ -110,6 +110,7 @@ pub struct UserToSave {
 pub mod test {
     use chrono::DateTime;
     use chrono::offset::Utc;
+    use diesel::RunQueryDsl;
     use super::super::super::db_conn;
     use super::super::super::models::users::{User, UserToSave};
     use uuid::Uuid;
@@ -127,7 +128,7 @@ pub mod test {
     }
 
     pub fn build_test_user() -> TestUser {
-        use diesel::{ExpressionMethods, FilterDsl, FirstDsl, LoadDsl};
+        use diesel::{ExpressionMethods, QueryDsl};
         use schema::users::dsl::email;
         use schema::users::table as users;
 
@@ -146,8 +147,8 @@ pub mod test {
                     password_hash: hashed_password.clone(),
                 };
 
-                let u: User = ::diesel::insert(&user_to_save)
-                    .into(users)
+                let u: User = ::diesel::insert_into(users)
+                    .values(&user_to_save)
                     .get_result(&*conn)
                     .expect("Error saving test user");
 

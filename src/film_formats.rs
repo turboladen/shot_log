@@ -1,5 +1,5 @@
-use diesel::LoadDsl;
 use db_conn::DbConn;
+use diesel::RunQueryDsl;
 use models::film_formats::FilmFormat;
 use models::users::CurrentUser;
 use rocket_contrib::Template;

@@ -1,5 +1,5 @@
-use diesel::LoadDsl;
 use db_conn::DbConn;
+use diesel::RunQueryDsl;
 use models::brands::Brand;
 use models::users::CurrentUser;
 use rocket_contrib::Template;

@@ -7,14 +7,17 @@ use rocket::{Outcome, Request, State};
 use std::ops::Deref;
 
 // // The URL to the database, set via the `DATABASE_URL` environment variable.
-static DATABASE_URL: &'static str = env!("DATABASE_URL");
+// static DATABASE_URL: &'static str = env!("DATABASE_URL");
 
 // // An alias to the type for a pool of Diesel PG connections.
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 // /// Initializes a database pool.
 pub fn init_pool() -> Pool {
-    let manager = ConnectionManager::<PgConnection>::new(DATABASE_URL);
+    // TODO: reconstantize
+    let database_url = ::std::env::var("DATABASE_URL").unwrap();
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
+
     r2d2::Pool::builder()
         .build(manager)
         .expect("Failed to create pool.")

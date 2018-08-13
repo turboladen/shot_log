@@ -1,5 +1,5 @@
 use rocket_contrib::Template;
-use diesel::{BelongingToDsl, ExecuteDsl, ExpressionMethods, FilterDsl, JoinDsl, JoinOnDsl, LoadDsl};
+use diesel::{BelongingToDsl, ExpressionMethods, JoinOnDsl, QueryDsl, RunQueryDsl};
 use db_conn::DbConn;
 use models::brands::Brand;
 use models::lenses::Lens;
