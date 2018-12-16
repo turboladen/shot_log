@@ -1,15 +1,16 @@
 use super::template_contexts::{EmptyResourceContext, FlashContext};
+use actix_web::Form;
 use db_conn::DbConn;
 use diesel::*;
 use models::users::{CurrentUser, LoginUser, User};
-use rocket::http::{Cookie, Cookies};
-use rocket::request::{FlashMessage, Form};
-use rocket::response::{Flash, Redirect};
-use rocket_contrib::Template;
+// use rocket::http::{Cookie, Cookies};
+// use rocket::request::{FlashMessage, Form};
+// use rocket::response::{Flash, Redirect};
+// use rocket_contrib::Template;
 use schema::users::table as users;
 
-#[get("/login")]
-fn login_form(flash: Option<FlashMessage>) -> Template {
+// #[get("/login")]
+pub(crate) fn login_form(flash: Option<FlashMessage>) -> Template {
     match flash {
         Some(fm) => {
             let context = EmptyResourceContext {
@@ -23,8 +24,8 @@ fn login_form(flash: Option<FlashMessage>) -> Template {
     }
 }
 
-#[post("/login", data = "<login_form>")]
-fn login(
+// #[post("/login", data = "<login_form>")]
+pub(crate) fn login(
     conn: DbConn,
     mut cookies: Cookies,
     login_form: Form<LoginUser>,
@@ -50,8 +51,8 @@ fn login(
     }
 }
 
-#[delete("/logout")]
-fn logout(_current_user: CurrentUser, mut cookies: Cookies) -> Flash<Redirect> {
+// #[delete("/logout")]
+pub(crate) fn logout(_current_user: CurrentUser, mut cookies: Cookies) -> Flash<Redirect> {
     cookies.remove_private(Cookie::named("user_id"));
 
     Flash::success(Redirect::to("/"), "Bye!")

@@ -1,4 +1,5 @@
 use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
+use actix_web::Form;
 use db_conn::DbConn;
 use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
@@ -8,9 +9,9 @@ use models::film_stocks::{FilmStock, SerializableFilmStock};
 use models::rolls::{NewRoll, Roll, RollForm};
 use models::user_cameras::UserCamera;
 use models::users::CurrentUser;
-use rocket::request::{FlashMessage, Form};
-use rocket::response::{Flash, Redirect};
-use rocket_contrib::Template;
+// use rocket::request::{FlashMessage, Form};
+// use rocket::response::{Flash, Redirect};
+// use rocket_contrib::Template;
 use schema::rolls::dsl::{rolls, user_camera_id};
 use schema::{brands, cameras, film_formats, film_stocks, user_cameras};
 use uuid::Uuid;
@@ -22,8 +23,8 @@ struct FullRoll {
     camera: SerializableCamera,
 }
 
-#[get("/rolls")]
-fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
+// #[get("/rolls")]
+pub(crate) fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -62,8 +63,8 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
     Template::render("rolls/index", context)
 }
 
-#[get("/rolls/new")]
-fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
+// #[get("/rolls/new")]
+pub(crate) fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -77,8 +78,8 @@ fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     Template::render("rolls/form", context)
 }
 
-#[post("/rolls", data = "<roll_form>")]
-fn create(
+// #[post("/rolls", data = "<roll_form>")]
+pub(crate) fn create(
     _current_user: CurrentUser,
     roll_form: Form<RollForm>,
     conn: DbConn,

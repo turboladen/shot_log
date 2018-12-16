@@ -1,14 +1,15 @@
 use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
+use actix_web::{Form, Json};
 use db_conn::DbConn;
 use diesel::{BelongingToDsl, ExpressionMethods, JoinOnDsl, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::cameras::Camera;
 use models::user_cameras::{NewUserCamera, UserCamera, UserCameraForm};
 use models::users::CurrentUser;
-use rocket::request::{FlashMessage, Form};
-use rocket::response::{Flash, Redirect};
-use rocket_contrib::UUID;
-use rocket_contrib::{Json, Template};
+// use rocket::request::{FlashMessage, Form};
+// use rocket::response::{Flash, Redirect};
+// use rocket_contrib::UUID;
+// use rocket_contrib::{Json, Template};
 use schema::{brands, cameras, user_cameras};
 use serializables::DropDown;
 use uuid::Uuid;
@@ -20,8 +21,8 @@ struct FullUserCamera {
     brand: Brand,
 }
 
-#[get("/user_cameras", format = "text/html")]
-fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
+// #[get("/user_cameras", format = "text/html")]
+pub(crate) fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -55,8 +56,8 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
     Template::render("user_cameras/index", context)
 }
 
-#[get("/user_cameras", format = "application/json")]
-fn drop_down(current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
+// #[get("/user_cameras", format = "application/json")]
+pub(crate) fn drop_down(current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     let data = user_cameras::table
         .inner_join(
             brands::table
@@ -82,8 +83,8 @@ fn drop_down(current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     Json(user_camera_dropdowns)
 }
 
-#[get("/user_cameras/new")]
-fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
+// #[get("/user_cameras/new")]
+pub(crate) fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -97,8 +98,8 @@ fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     Template::render("user_cameras/form", context)
 }
 
-#[post("/user_cameras", data = "<user_camera_form>")]
-fn create(
+// #[post("/user_cameras", data = "<user_camera_form>")]
+pub(crate) fn create(
     current_user: CurrentUser,
     user_camera_form: Form<UserCameraForm>,
     conn: DbConn,
@@ -126,8 +127,8 @@ fn create(
     }
 }
 
-#[delete("/user_cameras/<id>")]
-fn destroy(
+// #[delete("/user_cameras/<id>")]
+pub(crate) fn destroy(
     current_user: CurrentUser,
     id: UUID,
     conn: DbConn,

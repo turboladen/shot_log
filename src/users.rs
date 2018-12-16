@@ -1,25 +1,26 @@
 use super::template_contexts::FlashContext;
 use argon2rs::argon2d_simple;
+use actix_web::Form;
 use db_conn::DbConn;
 use diesel::RunQueryDsl;
 use models::users::{NewUser, User, UserToSave};
-use rocket::http::{Cookie, Cookies};
-use rocket::request::{FlashMessage, Form};
-use rocket::response::{Flash, Redirect};
-use rocket_contrib::Template;
+// use rocket::http::{Cookie, Cookies};
+// use rocket::request::{FlashMessage, Form};
+// use rocket::response::{Flash, Redirect};
+// use rocket_contrib::Template;
 use schema::users;
 use std::env;
 
-#[get("/users/new")]
-fn new(flash: Option<FlashMessage>) -> Template {
+// #[get("/users/new")]
+pub(crate) fn new(flash: Option<FlashMessage>) -> Template {
     match flash {
         Some(fm) => Template::render("users/form", FlashContext::new(fm)),
         None => Template::render("users/form", ()),
     }
 }
 
-#[post("/users", data = "<user_form>")]
-fn create(
+// #[post("/users", data = "<user_form>")]
+pub(crate) fn create(
     conn: DbConn,
     mut cookies: Cookies,
     user_form: Form<NewUser>,
@@ -60,7 +61,7 @@ fn create(
     ))
 }
 
-pub fn password_to_hash(password: &str) -> String {
+pub(crate) fn password_to_hash(password: &str) -> String {
     let hashed_password = argon2d_simple(password, env::var("SALT").expect("No SALT").as_str());
 
     let s: String = hashed_password.into_iter().map(|c| *c as char).collect();

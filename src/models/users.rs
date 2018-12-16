@@ -1,11 +1,11 @@
 use chrono::offset::Utc;
 use chrono::DateTime;
-use db_conn::DbConn;
+use db_conn::DbExecutor;
 use diesel::*;
-use models::user_cameras::UserCamera;
-use rocket::http::Status;
-use rocket::request::{self, FromRequest, Request};
-use rocket::{Outcome, State};
+// use models::user_cameras::UserCamera;
+// use rocket::http::Status;
+// use rocket::request::{self, FromRequest, Request};
+// use rocket::{Outcome, State};
 use schema::users;
 use uuid::Uuid;
 
@@ -27,22 +27,22 @@ pub struct CurrentUser {
     pub updated_at: DateTime<Utc>,
 }
 
-impl CurrentUser {
-    pub fn user_cameras(&self, conn: &DbConn) -> Vec<UserCamera> {
-        UserCamera::belonging_to(self)
-            .get_results::<UserCamera>(&**conn)
-            .expect("Couldn't find associated user cameras")
-    }
+// impl CurrentUser {
+//     pub fn user_cameras(&self, conn: &DbConn) -> Vec<UserCamera> {
+//         UserCamera::belonging_to(self)
+//             .get_results::<UserCamera>(&**conn)
+//             .expect("Couldn't find associated user cameras")
+//     }
 
-    pub fn user_camera_ids(&self, conn: &DbConn) -> Vec<Uuid> {
-        use schema::user_cameras::dsl::id as user_camera_id;
+//     pub fn user_camera_ids(&self, conn: &DbConn) -> Vec<Uuid> {
+//         use schema::user_cameras::dsl::id as user_camera_id;
 
-        UserCamera::belonging_to(self)
-            .select(user_camera_id)
-            .load::<Uuid>(&**conn)
-            .expect("Couldn't find associated user cameras")
-    }
-}
+//         UserCamera::belonging_to(self)
+//             .select(user_camera_id)
+//             .load::<Uuid>(&**conn)
+//             .expect("Couldn't find associated user cameras")
+//     }
+// }
 
 impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {
     type Error = ();

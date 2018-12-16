@@ -1,14 +1,15 @@
 use super::template_contexts::{EmptyResourceContext, FlashContext, ListResourcesContext};
+use actix_web::Form;
 use db_conn::DbConn;
 use diesel::{BelongingToDsl, ExpressionMethods, JoinOnDsl, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::lenses::Lens;
 use models::user_lenses::{NewUserLens, UserLens, UserLensForm};
 use models::users::CurrentUser;
-use rocket::request::{FlashMessage, Form};
-use rocket::response::{Flash, Redirect};
-use rocket_contrib::Template;
-use rocket_contrib::UUID;
+// use rocket::request::{FlashMessage, Form};
+// use rocket::response::{Flash, Redirect};
+// use rocket_contrib::Template;
+// use rocket_contrib::UUID;
 use schema::{brands, lenses, user_lenses};
 use uuid::Uuid;
 
@@ -19,8 +20,8 @@ struct FullUserLens {
     brand: Brand,
 }
 
-#[get("/user_lenses", format = "text/html")]
-fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
+// #[get("/user_lenses", format = "text/html")]
+pub(crate) fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -54,8 +55,8 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
     Template::render("user_lenses/index", context)
 }
 
-#[get("/user_lenses/new")]
-fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
+// #[get("/user_lenses/new")]
+pub(crate) fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -69,8 +70,8 @@ fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     Template::render("user_lenses/form", context)
 }
 
-#[post("/user_lenses", data = "<user_lens_form>")]
-fn create(
+// #[post("/user_lenses", data = "<user_lens_form>")]
+pub(crate) fn create(
     current_user: CurrentUser,
     user_lens_form: Form<UserLensForm>,
     conn: DbConn,
@@ -97,8 +98,8 @@ fn create(
     }
 }
 
-#[delete("/user_lenses/<id>")]
-fn destroy(
+// #[delete("/user_lenses/<id>")]
+pub(crate) fn destroy(
     current_user: CurrentUser,
     id: UUID,
     conn: DbConn,

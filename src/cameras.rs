@@ -1,15 +1,16 @@
 use super::template_contexts::ListResourcesContext;
+use actix_web::Json;
 use db_conn::DbConn;
 use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::cameras::{Camera, SerializableCamera};
 use models::users::CurrentUser;
-use rocket_contrib::{Json, Template};
+// use rocket_contrib::{Json, Template};
 use schema::{brands, cameras};
 use serializables::DropDown;
 
-#[get("/cameras", format = "text/html")]
-fn index(current_user: CurrentUser, conn: DbConn) -> Template {
+// #[get("/cameras", format = "text/html")]
+pub(crate) fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let camera_vec = cameras::table
         .inner_join(brands::table)
         .load::<(Camera, Brand)>(&*conn)
@@ -33,8 +34,8 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     Template::render("cameras/index", context)
 }
 
-#[get("/cameras", format = "application/json")]
-fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
+// #[get("/cameras", format = "application/json")]
+pub(crate) fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     use schema::brands::dsl::name as brand_name;
     use schema::cameras::dsl::model as camera_model;
 
