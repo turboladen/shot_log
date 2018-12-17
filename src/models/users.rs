@@ -6,8 +6,8 @@ use models::user_cameras::UserCamera;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
 use rocket::{Outcome, State};
-use schema::users;
 use uuid::Uuid;
+use schema::users;
 
 #[derive(Identifiable, Queryable, Serialize)]
 pub struct User {
@@ -58,9 +58,9 @@ impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {
                     Err(_) => return Outcome::Forward(()),
                 };
 
-                let pool = request.guard::<State<::db_conn::Pool>>()?;
+                // let pool = request.guard::<State<::db_conn::DbConn>>()?;
 
-                let conn = match pool.get() {
+                let conn = match request.guard::<State<::db_conn::DbConn>>() {
                     Ok(conn) => DbConn(conn),
                     Err(_) => return Outcome::Failure((Status::ServiceUnavailable, ())),
                 };
@@ -113,7 +113,7 @@ pub mod test {
     use chrono::offset::Utc;
     use chrono::DateTime;
     use diesel::RunQueryDsl;
-    use uuid::Uuid;
+    use rocket_contrib::uuid::Uuid;
 
     static TEST_USER_EMAIL: &'static str = "test@shot_log.com";
     static TEST_USER_PASSWORD: &'static str = "asdfQWER1234";

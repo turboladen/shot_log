@@ -3,12 +3,12 @@ use rocket::request::FlashMessage;
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::hash::{Hash, Hasher};
 
-pub struct FlashContext {
-    pub flash_message: FlashMessage,
+pub struct FlashContext<'a, 'r> {
+    pub flash_message: FlashMessage<'a, 'r>,
 }
 
-impl FlashContext {
-    pub fn new(flash_message: FlashMessage) -> Self {
+impl<'a, 'r> FlashContext<'a, 'r> {
+    pub fn new(flash_message: FlashMessage<'a, 'r>) -> Self {
         FlashContext {
             flash_message: flash_message,
         }
@@ -28,14 +28,14 @@ impl FlashContext {
     }
 }
 
-impl Hash for FlashContext {
+impl<'a, 'r> Hash for FlashContext<'a, 'r> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.css_class().hash(state);
         self.message().hash(state);
     }
 }
 
-impl Serialize for FlashContext {
+impl<'a, 'r> Serialize for FlashContext<'a, 'r> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -49,23 +49,23 @@ impl Serialize for FlashContext {
 }
 
 #[derive(Serialize, Hash)]
-pub struct EmptyResourceContext {
+pub struct EmptyResourceContext<'a, 'r> {
     pub current_user: Option<CurrentUser>,
-    pub flash: Option<FlashContext>,
+    pub flash: Option<FlashContext<'a, 'r>>,
 }
 
 #[derive(Serialize, Hash)]
-pub struct ListResourcesContext<'a, T> {
+pub struct ListResourcesContext<'a, 'b, 'r, T> {
     pub current_user: Option<CurrentUser>,
-    pub flash: Option<FlashContext>,
-    pub name: &'a str,
+    pub flash: Option<FlashContext<'a, 'r>>,
+    pub name: &'b str,
     pub resources: Vec<T>,
 }
 
 #[derive(Serialize, Hash)]
-pub struct SingleResourceContext<'a, T> {
+pub struct SingleResourceContext<'a, 'b, 'r, T> {
     pub current_user: Option<CurrentUser>,
-    pub flash: Option<FlashContext>,
-    pub name: &'a str,
+    pub flash: Option<FlashContext<'a, 'r>>,
+    pub name: &'b str,
     pub resource: T,
 }

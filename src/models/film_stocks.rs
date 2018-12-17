@@ -2,8 +2,8 @@ use chrono::offset::Utc;
 use chrono::DateTime;
 use models::brands::Brand;
 use models::film_formats::FilmFormat;
-use schema::film_stocks;
 use uuid::Uuid;
+use schema::film_stocks;
 
 #[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Brand)]

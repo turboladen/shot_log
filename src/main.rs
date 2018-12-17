@@ -1,7 +1,7 @@
-#![feature(custom_derive)]
-#![feature(plugin)]
-#![plugin(rocket_codegen)]
-#![feature(const_fn)]
+#![feature(custom_derive, const_fn, custom_attribute, proc_macro_hygiene, decl_macro)]
+
+#![allow(proc_macro_derive_resolution_fallback)]
+
 #![recursion_limit = "256"]
 
 extern crate argon2rs;
@@ -13,7 +13,7 @@ extern crate env_logger;
 #[macro_use]
 extern crate log;
 extern crate r2d2;
-extern crate r2d2_diesel;
+#[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
 extern crate uuid;
@@ -41,9 +41,11 @@ mod user_cameras;
 mod user_lenses;
 mod users;
 
+use db_conn::DbConn;
 use dotenv::dotenv;
 use rocket::Rocket;
-use rocket_contrib::Template;
+use rocket::fairing::Fairing;
+use rocket_contrib::templates::Template;
 
 fn main() {
     rocket().launch();
@@ -84,7 +86,7 @@ fn rocket() -> Rocket {
     ];
 
     rocket::ignite()
-        .manage(db_conn::init_pool())
+        .attach(DbConn::fairing())
         .attach(Template::fairing())
         .mount("/", routes)
 }

@@ -2,9 +2,8 @@ use chrono::offset::Utc;
 use chrono::DateTime;
 use models::lenses::Lens;
 use models::users::{CurrentUser, User};
-use rocket_contrib::UUID;
-use schema::user_lenses;
 use uuid::Uuid;
+use schema::user_lenses;
 
 #[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Lens)]
@@ -22,7 +21,7 @@ pub struct UserLens {
 
 #[derive(FromForm)]
 pub struct UserLensForm {
-    pub lens_id: UUID,
+    pub lens_id: Uuid,
     pub serial_number: Option<String>,
 }
 

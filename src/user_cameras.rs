@@ -7,11 +7,10 @@ use models::user_cameras::{NewUserCamera, UserCamera, UserCameraForm};
 use models::users::CurrentUser;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
-use rocket_contrib::UUID;
-use rocket_contrib::{Json, Template};
+use rocket_contrib::uuid::Uuid;
+use rocket_contrib::{json::Json, templates::Template};
 use schema::{brands, cameras, user_cameras};
 use serializables::DropDown;
-use uuid::Uuid;
 
 #[derive(Serialize)]
 struct FullUserCamera {
@@ -21,7 +20,7 @@ struct FullUserCamera {
 }
 
 #[get("/user_cameras", format = "text/html")]
-fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
+pub(crate) fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -56,7 +55,7 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
 }
 
 #[get("/user_cameras", format = "application/json")]
-fn drop_down(current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
+pub(crate) fn drop_down(current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     let data = user_cameras::table
         .inner_join(
             brands::table
@@ -83,7 +82,7 @@ fn drop_down(current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
 }
 
 #[get("/user_cameras/new")]
-fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
+pub(crate) fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -98,7 +97,7 @@ fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
 }
 
 #[post("/user_cameras", data = "<user_camera_form>")]
-fn create(
+pub(crate) fn create(
     current_user: CurrentUser,
     user_camera_form: Form<UserCameraForm>,
     conn: DbConn,
@@ -127,9 +126,9 @@ fn create(
 }
 
 #[delete("/user_cameras/<id>")]
-fn destroy(
+pub(crate) fn destroy(
     current_user: CurrentUser,
-    id: UUID,
+    id: Uuid,
     conn: DbConn,
 ) -> Result<Flash<Redirect>, Flash<Redirect>> {
     use schema::user_cameras::dsl::id as user_camera_id;

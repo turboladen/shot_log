@@ -2,9 +2,8 @@ use chrono::offset::Utc;
 use chrono::DateTime;
 use models::cameras::Camera;
 use models::users::{CurrentUser, User};
-use rocket_contrib::UUID;
-use schema::user_cameras;
 use uuid::Uuid;
+use schema::user_cameras;
 
 #[derive(Associations, Identifiable, Queryable, Serialize)]
 #[belongs_to(Camera)]
@@ -22,7 +21,7 @@ pub struct UserCamera {
 
 #[derive(FromForm)]
 pub struct UserCameraForm {
-    pub camera_id: UUID,
+    pub camera_id: Uuid,
     pub roll_prefix: String,
     pub serial_number: Option<String>,
 }

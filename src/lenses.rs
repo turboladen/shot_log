@@ -4,7 +4,7 @@ use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
 use models::brands::Brand;
 use models::lenses::Lens;
 use models::users::CurrentUser;
-use rocket_contrib::{Json, Template};
+use rocket_contrib::{json::Json, templates::Template};
 use schema::{brands, lenses};
 use serializables::DropDown;
 
@@ -15,7 +15,7 @@ struct FullLens {
 }
 
 #[get("/lenses", format = "text/html")]
-fn index(current_user: CurrentUser, conn: DbConn) -> Template {
+pub(crate) fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let lens_vec = lenses::table
         .inner_join(brands::table)
         .load::<(Lens, Brand)>(&*conn)
@@ -40,7 +40,7 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 }
 
 #[get("/lenses", format = "application/json")]
-fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
+pub(crate) fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     use schema::brands::dsl::name as brand_name;
     use schema::lenses::dsl::model as lens_model;
 

@@ -5,13 +5,13 @@ use models::brands::Brand;
 use models::film_formats::{for_display, FilmFormat};
 use models::film_stocks::{FilmStock, SerializableFilmStock};
 use models::users::CurrentUser;
-use rocket_contrib::{Json, Template};
+use rocket_contrib::{json::Json, templates::Template};
 use schema::{brands, film_formats, film_stocks};
 use serializables::DropDown;
-use uuid::Uuid;
+use rocket_contrib::uuid::Uuid;
 
 #[get("/film_stocks", format = "text/html")]
-fn index(current_user: CurrentUser, conn: DbConn) -> Template {
+pub(crate) fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let joined_film_stocks = film_stocks::table
         .inner_join(brands::table)
         .inner_join(film_formats::table)
@@ -38,7 +38,7 @@ fn index(current_user: CurrentUser, conn: DbConn) -> Template {
 }
 
 #[get("/film_stocks", format = "application/json")]
-fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
+pub(crate) fn drop_down(_current_user: CurrentUser, conn: DbConn) -> Json<Vec<DropDown>> {
     let joined_film_stocks = film_stocks::table
         .inner_join(brands::table)
         .inner_join(film_formats::table)

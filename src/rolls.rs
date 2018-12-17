@@ -10,10 +10,10 @@ use models::user_cameras::UserCamera;
 use models::users::CurrentUser;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
-use rocket_contrib::Template;
+use rocket_contrib::templates::Template;
+use rocket_contrib::uuid::Uuid;
 use schema::rolls::dsl::{rolls, user_camera_id};
 use schema::{brands, cameras, film_formats, film_stocks, user_cameras};
-use uuid::Uuid;
 
 #[derive(Serialize)]
 struct FullRoll {
@@ -23,7 +23,7 @@ struct FullRoll {
 }
 
 #[get("/rolls")]
-fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
+pub(crate) fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -63,7 +63,7 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
 }
 
 #[get("/rolls/new")]
-fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
+pub(crate) fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -78,7 +78,7 @@ fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
 }
 
 #[post("/rolls", data = "<roll_form>")]
-fn create(
+pub(crate) fn create(
     _current_user: CurrentUser,
     roll_form: Form<RollForm>,
     conn: DbConn,

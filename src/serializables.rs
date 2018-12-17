@@ -1,4 +1,4 @@
-use uuid::Uuid;
+use rocket_contrib::uuid::Uuid;
 
 #[derive(Serialize)]
 pub struct DropDown {

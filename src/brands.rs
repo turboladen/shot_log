@@ -3,11 +3,11 @@ use db_conn::DbConn;
 use diesel::RunQueryDsl;
 use models::brands::Brand;
 use models::users::CurrentUser;
-use rocket_contrib::Template;
+use rocket_contrib::templates::Template;
 use schema::brands;
 
 #[get("/brands", format = "text/html")]
-fn index(current_user: CurrentUser, conn: DbConn) -> Template {
+pub(crate) fn index(current_user: CurrentUser, conn: DbConn) -> Template {
     let result = brands::table.load::<Brand>(&*conn);
     let brands = result.expect("Error loading brands");
 

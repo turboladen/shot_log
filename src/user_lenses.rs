@@ -7,10 +7,10 @@ use models::user_lenses::{NewUserLens, UserLens, UserLensForm};
 use models::users::CurrentUser;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, Redirect};
-use rocket_contrib::Template;
-use rocket_contrib::UUID;
-use schema::{brands, lenses, user_lenses};
+use rocket_contrib::templates::Template;
+use rocket_contrib::uuid::Uuid as RocketUuid;
 use uuid::Uuid;
+use schema::{brands, lenses, user_lenses};
 
 #[derive(Serialize)]
 struct FullUserLens {
@@ -20,7 +20,7 @@ struct FullUserLens {
 }
 
 #[get("/user_lenses", format = "text/html")]
-fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
+pub(crate) fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -55,7 +55,7 @@ fn index(current_user: CurrentUser, flash: Option<FlashMessage>, conn: DbConn) -
 }
 
 #[get("/user_lenses/new")]
-fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
+pub(crate) fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
     let flash_context = match flash {
         Some(fm) => Some(FlashContext::new(fm)),
         None => None,
@@ -70,7 +70,7 @@ fn new(current_user: CurrentUser, flash: Option<FlashMessage>) -> Template {
 }
 
 #[post("/user_lenses", data = "<user_lens_form>")]
-fn create(
+pub(crate) fn create(
     current_user: CurrentUser,
     user_lens_form: Form<UserLensForm>,
     conn: DbConn,
@@ -98,9 +98,9 @@ fn create(
 }
 
 #[delete("/user_lenses/<id>")]
-fn destroy(
+pub(crate) fn destroy(
     current_user: CurrentUser,
-    id: UUID,
+    id: RocketUuid,
     conn: DbConn,
 ) -> Result<Flash<Redirect>, Flash<Redirect>> {
     use schema::user_lenses::dsl::id as user_lens_id;
