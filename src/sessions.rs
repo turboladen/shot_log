@@ -1,62 +1,70 @@
-use super::template_contexts::{EmptyResourceContext, FlashContext};
-use actix_web::Form;
-use db_conn::DbConn;
-use diesel::*;
-use models::users::{CurrentUser, LoginUser, User};
+use actix_web::{HttpRequest, HttpResponse, Form, Result as ActixResult, error::ErrorInternalServerError};
+use app_state::AppState;
+// use diesel::*;
+// use models::users::{CurrentUser, LoginUser, User};
 // use rocket::http::{Cookie, Cookies};
 // use rocket::request::{FlashMessage, Form};
 // use rocket::response::{Flash, Redirect};
-// use rocket_contrib::Template;
-use schema::users::table as users;
+// use schema::users::table as users;
+use super::template_contexts::{EmptyResourceContext, FlashContext};
+use flash_message::get_flash;
 
 // #[get("/login")]
-pub(crate) fn login_form(flash: Option<FlashMessage>) -> Template {
-    match flash {
+pub(crate) fn login_form(req: HttpRequest<AppState>) -> ActixResult<HttpResponse> {
+    let render_result = match get_flash(&req)? {
         Some(fm) => {
             let context = EmptyResourceContext {
                 current_user: None,
                 flash: Some(FlashContext::new(fm)),
             };
 
-            Template::render("sessions/form", context)
+            req.state().template.render("sessions/form", &context)
         }
-        None => Template::render("sessions/form", ()),
-    }
+        None => req.state().template.render("sessions/form", &())
+    };
+
+    let body = render_result
+        .map_err(|e| {
+            debug!("Failed to render template: {}", e.to_string());
+            ErrorInternalServerError(e)
+        })?;
+
+    Ok(HttpResponse::Ok().body(&body))
 }
 
 // #[post("/login", data = "<login_form>")]
-pub(crate) fn login(
-    conn: DbConn,
-    mut cookies: Cookies,
-    login_form: Form<LoginUser>,
-) -> Result<Redirect, Flash<Redirect>> {
-    use schema::users::dsl::email;
-    let form = login_form.get();
+// pub(crate) fn login(
+//     conn: DbConn,
+//     mut cookies: Cookies,
+//     login_form: Form<LoginUser>,
+// ) -> Result<Redirect, Flash<Redirect>> {
+//     use schema::users::dsl::email;
+//     let form = login_form.get();
 
-    match users.filter(email.eq(&form.email)).first::<User>(&*conn) {
-        Ok(user) => {
-            let hashed_password = ::users::password_to_hash(&form.password);
+//     match users.filter(email.eq(&form.email)).first::<User>(&*conn) {
+//         Ok(user) => {
+//             let hashed_password = ::users::password_to_hash(&form.password);
 
-            if user.password_hash == hashed_password {
-                cookies.add_private(Cookie::new("user_id", user.id.to_string()));
-                Ok(Redirect::to("/user_cameras"))
-            } else {
-                Err(Flash::error(Redirect::to("/login"), "Invalid password"))
-            }
-        }
-        Err(_) => Err(Flash::error(
-            Redirect::to("/login"),
-            format!("No user with email {}", &form.email),
-        )),
-    }
-}
+//             if user.password_hash == hashed_password {
+//                 cookies.add_private(Cookie::new("user_id", user.id.to_string()));
+//                 Ok(Redirect::to("/user_cameras"))
+//             } else {
+//                 Err(Flash::error(Redirect::to("/login"), "Invalid password"))
+//             }
+//         }
+//         Err(_) => Err(Flash::error(
+//             Redirect::to("/login"),
+//             format!("No user with email {}", &form.email),
+//         )),
+//     }
+// }
 
 // #[delete("/logout")]
-pub(crate) fn logout(_current_user: CurrentUser, mut cookies: Cookies) -> Flash<Redirect> {
-    cookies.remove_private(Cookie::named("user_id"));
+// pub(crate) fn logout(_current_user: CurrentUser, mut cookies: Cookies) -> Flash<Redirect> {
+//     cookies.remove_private(Cookie::named("user_id"));
 
-    Flash::success(Redirect::to("/"), "Bye!")
-}
+//     Flash::success(Redirect::to("/"), "Bye!")
+// }
 
 #[cfg(test)]
 mod tests {

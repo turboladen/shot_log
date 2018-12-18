@@ -6,9 +6,6 @@ use diesel::*;
 use futures::Future;
 use handlers::GetCurrentUser;
 // use models::user_cameras::UserCamera;
-// use rocket::http::Status;
-// use rocket::request::{self, FromRequest, Request};
-// use rocket::{Outcome, State};
 use schema::users;
 use uuid::Uuid;
 
