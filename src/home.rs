@@ -28,5 +28,5 @@ pub(crate) fn index((req, current_user): (HttpRequest<AppState>, Option<CurrentU
 }
 
 pub(crate) fn files(file: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new("vendor/").join(file)).ok()
+    NamedFile::open(Path::new("assets/").join(file)).ok()
 }
