@@ -1,5 +1,5 @@
 use super::models::users::CurrentUser;
-// use rocket::request::FlashMessage;
+use flash_message::FlashMessage;
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::hash::{Hash, Hasher};
 
@@ -15,7 +15,7 @@ impl FlashContext {
     }
 
     fn css_class(&self) -> &str {
-        match self.flash_message.name() {
+        match self.flash_message.message.as_str() {
             "success" => "success",
             "warning" => "warning",
             "error" => "danger",
@@ -24,7 +24,7 @@ impl FlashContext {
     }
 
     fn message(&self) -> &str {
-        self.flash_message.msg()
+        self.flash_message.message.as_str()
     }
 }
 

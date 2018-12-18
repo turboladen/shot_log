@@ -1,7 +1,10 @@
+use actix_web::{FromRequest, HttpRequest, error::ErrorUnauthorized};
+use app_state::AppState;
 use chrono::offset::Utc;
 use chrono::DateTime;
-use db_conn::DbExecutor;
 use diesel::*;
+use futures::Future;
+use handlers::GetCurrentUser;
 // use models::user_cameras::UserCamera;
 // use rocket::http::Status;
 // use rocket::request::{self, FromRequest, Request};
@@ -44,56 +47,43 @@ pub struct CurrentUser {
 //     }
 // }
 
-impl<'a, 'r> FromRequest<'a, 'r> for CurrentUser {
-    type Error = ();
+impl FromRequest<AppState> for CurrentUser {
+    type Config = ();
+    type Result = Result<CurrentUser, ::actix_web::Error>;
 
-    fn from_request(request: &'a Request<'r>) -> request::Outcome<CurrentUser, ()> {
+    fn from_request(request: &HttpRequest<AppState>, _: &Self::Config) -> Self::Result {
         use schema::users::table as users;
-        let mut cookies = request.cookies();
 
-        match cookies.get_private("user_id") {
+        match request.cookie("user_id") {
             Some(user_id_cookie) => {
                 let user_id = match Uuid::parse_str(user_id_cookie.value()) {
                     Ok(id) => id,
-                    Err(_) => return Outcome::Forward(()),
+                    Err(_) => return Err(ErrorUnauthorized("sup")),
                 };
 
-                let pool = request.guard::<State<::db_conn::Pool>>()?;
-
-                let conn = match pool.get() {
-                    Ok(conn) => DbConn(conn),
-                    Err(_) => return Outcome::Failure((Status::ServiceUnavailable, ())),
-                };
-
-                match users.find(user_id).first::<User>(&*conn) {
-                    Ok(user) => {
-                        let u = CurrentUser {
-                            id: user.id,
-                            email: user.email,
-                            created_at: user.created_at,
-                            updated_at: user.updated_at,
-                        };
-                        Outcome::Success(u)
-                    }
-                    Err(_) => Outcome::Forward(()),
-                }
+                // TODO: don't wait!
+                request
+                    .state()
+                    .db
+                    .send(GetCurrentUser { id: user_id })
+                    .wait()?
             }
             None => {
                 info!("No cookie in cookies");
-                Outcome::Forward(())
+                Err(ErrorUnauthorized("sup"))
             }
         }
     }
 }
 
-#[derive(FromForm)]
+#[derive(Deserialize)]
 pub struct NewUser {
     pub email: String,
     pub password: String,
     pub password_confirmation: String,
 }
 
-#[derive(FromForm)]
+#[derive(Deserialize)]
 pub struct LoginUser {
     pub email: String,
     pub password: String,

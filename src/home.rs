@@ -1,47 +1,32 @@
-use actix_web::{HttpRequest, HttpResponse, State};
-use super::AppState;
-use super::template_contexts::{EmptyResourceContext, FlashContext};
+use actix_web::{HttpRequest, HttpResponse, Result as ActixResult, error::ErrorInternalServerError};
+use actix_web::fs::NamedFile;
+use app_state::AppState;
+use super::template_contexts::EmptyResourceContext;
 use models::users::CurrentUser;
-// use rocket::request::FlashMessage;
-// use rocket::response::NamedFile;
-// use rocket_contrib::Template;
 use std::path::{Path, PathBuf};
 
-// #[get("/", format = "text/html")]
-// pub(crate) fn index(current_user: CurrentUser) -> Template {
-//     let context = EmptyResourceContext {
-//         current_user: Some(current_user),
-//         flash: None,
-//     };
+pub(crate) fn index((req, current_user): (HttpRequest<AppState>, Option<CurrentUser>)) -> ActixResult<HttpResponse> {
+    let render_result = match current_user {
+        Some(cu) => {
+            let context = EmptyResourceContext {
+                current_user: Some(cu),
+                flash: None,
+            };
 
-//     Template::render("home", context)
-// }
-pub(crate) fn index(state: State<AppState>) -> HttpResponse {
-    let context = EmptyResourceContext {
-        current_user: Some(current_user),
-        flash: None,
+            req.state().template.render("home", &context)
+        },
+        None => req.state().template.render("home", &())
     };
 
-    // Template::render("home", context)
-    state.template.render("home", context)
+    let body = render_result
+        .map_err(|e| {
+            debug!("Failed to render template: {}", e.to_string());
+            ErrorInternalServerError(e)
+        })?;
+
+    Ok(HttpResponse::Ok().body(&body))
 }
 
-// #[get("/", format = "text/html", rank = 2)]
-// pub(crate) fn index_no_user(flash: Option<FlashMessage>) -> Template {
-//     match flash {
-//         Some(fm) => {
-//             let context = EmptyResourceContext {
-//                 current_user: None,
-//                 flash: Some(FlashContext::new(fm)),
-//             };
-
-//             Template::render("home", context)
-//         }
-//         None => Template::render("home", ()),
-//     }
-// }
-
-// #[get("/<file..>")]
 pub(crate) fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("vendor/").join(file)).ok()
 }
