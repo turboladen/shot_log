@@ -15,7 +15,10 @@ pub(crate) fn index((req, current_user): (HttpRequest<AppState>, Option<CurrentU
 
             req.state().template.render("home", &context)
         },
-        None => req.state().template.render("home", &())
+        None => {
+            debug!("No current user.");
+            req.state().template.render("home", &())
+        }
     };
 
     let body = render_result
