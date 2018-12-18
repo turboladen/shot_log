@@ -156,8 +156,10 @@ fn main() {
 }
 
 fn setup_env() {
-    std::env::set_var("RUST_LOG", "shotlog=debug,actix_web=info");
-    env_logger::init();
+    std::env::set_var("RUST_LOG", "shotlog=debug,actix_web=debug");
+    if env_logger::init().is_err() {
+        panic!("Unable to init logging");
+    }
     dotenv::dotenv().ok();
 }
 
