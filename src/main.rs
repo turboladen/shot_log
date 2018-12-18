@@ -44,7 +44,7 @@ mod home;
 // mod users;
 
 use actix::prelude::*;
-use actix_web::{server, App};
+use actix_web::{middleware, server, App};
 use actix_web::middleware::session::{SessionStorage, CookieSessionBackend};
 use db_conn::DbExecutor;
 use diesel::prelude::*;
@@ -56,7 +56,7 @@ const SERVER_ADDRESS: &str = "127.0.0.1:8088";
 
 fn main() {
     setup_env();
-    let sys = actix::System::new("shotlog");
+    let sys = actix::System::new("shot_log");
     let pool = setup_db_pool();
     let addr = SyncArbiter::start(DB_ARBITER_COUNT, move || DbExecutor(pool.clone()));
 
@@ -64,6 +64,7 @@ fn main() {
         let state = app_state::AppState::new(addr.clone());
 
         App::with_state(state)
+            .middleware(middleware::Logger::default())
             .middleware(
                 SessionStorage::new(
                  CookieSessionBackend::private(&[0; 32])
@@ -156,7 +157,7 @@ fn main() {
 }
 
 fn setup_env() {
-    std::env::set_var("RUST_LOG", "shotlog=debug,actix_web=debug");
+    std::env::set_var("RUST_LOG", "shot_log=debug,actix_web=info");
     if env_logger::init().is_err() {
         panic!("Unable to init logging");
     }
