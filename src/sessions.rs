@@ -1,15 +1,20 @@
 use actix_web::{HttpRequest, HttpResponse, Form, Result as ActixResult, error::ErrorInternalServerError};
+use actix_web::middleware::session::RequestSession;
 use app_state::AppState;
+use flash_message::{self, FlashMessage};
+use futures::Future;
+use handlers::GetLoginUser;
 // use diesel::*;
 // use models::users::{CurrentUser, LoginUser, User};
+use models::users::LoginUser;
 // use rocket::http::{Cookie, Cookies};
 // use rocket::request::{FlashMessage, Form};
 // use rocket::response::{Flash, Redirect};
 // use schema::users::table as users;
+use route_helpers;
 use super::template_contexts::{EmptyResourceContext, FlashContext};
 use flash_message::get_flash;
 
-// #[get("/login")]
 pub(crate) fn login_form(req: HttpRequest<AppState>) -> ActixResult<HttpResponse> {
     let render_result = match get_flash(&req)? {
         Some(fm) => {
@@ -32,32 +37,29 @@ pub(crate) fn login_form(req: HttpRequest<AppState>) -> ActixResult<HttpResponse
     Ok(HttpResponse::Ok().body(&body))
 }
 
-// #[post("/login", data = "<login_form>")]
-// pub(crate) fn login(
-//     conn: DbConn,
-//     mut cookies: Cookies,
-//     login_form: Form<LoginUser>,
-// ) -> Result<Redirect, Flash<Redirect>> {
-//     use schema::users::dsl::email;
-//     let form = login_form.get();
+pub(crate) fn login((req, form): (HttpRequest<AppState>, Form<LoginUser>)) -> ActixResult<HttpResponse> {
+    let user_result = req
+        .state()
+        .db
+        .send(GetLoginUser { email: form.email.clone() })
+        .wait()?;
 
-//     match users.filter(email.eq(&form.email)).first::<User>(&*conn) {
-//         Ok(user) => {
-//             let hashed_password = ::users::password_to_hash(&form.password);
+    match user_result {
+        Ok(user) => {
+            let hashed_password = ::users::password_to_hash(&form.password);
 
-//             if user.password_hash == hashed_password {
-//                 cookies.add_private(Cookie::new("user_id", user.id.to_string()));
-//                 Ok(Redirect::to("/user_cameras"))
-//             } else {
-//                 Err(Flash::error(Redirect::to("/login"), "Invalid password"))
-//             }
-//         }
-//         Err(_) => Err(Flash::error(
-//             Redirect::to("/login"),
-//             format!("No user with email {}", &form.email),
-//         )),
-//     }
-// }
+            if user.password_hash == hashed_password {
+                req.session().set("user_id", user.id.to_string());
+                Ok(route_helpers::redirect_to("/user_cameras"))
+            } else {
+                let message = FlashMessage::error("Invalid password");
+                flash_message::set_flash(&req, message);
+                Ok(route_helpers::redirect_to("/login"))
+            }
+        },
+        Err(e) => Ok(e.into())
+    }
+}
 
 // #[delete("/logout")]
 // pub(crate) fn logout(_current_user: CurrentUser, mut cookies: Cookies) -> Flash<Redirect> {

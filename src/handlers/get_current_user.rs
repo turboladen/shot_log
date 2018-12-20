@@ -4,7 +4,6 @@ use actix_web::*;
 use db_conn::DbExecutor;
 use diesel::prelude::*;
 use models::users::{CurrentUser, User};
-use schema;
 use uuid::Uuid;
 
 /// This is only message that this actor can handle, but it is easy to extend

@@ -41,7 +41,8 @@ mod home;
 mod sessions;
 // mod user_cameras;
 // mod user_lenses;
-// mod users;
+mod route_helpers;
+mod users;
 
 use actix::prelude::*;
 use actix_web::{http::Method, middleware, server, App};
@@ -63,16 +64,18 @@ fn main() {
     server::new(move || {
         let state = app_state::AppState::new(addr.clone());
 
+        let session_storage = SessionStorage::new(
+            CookieSessionBackend::private(&[0; 32])
+            .secure(false)
+        );
+
         App::with_state(state)
             .middleware(middleware::Logger::default())
-            .middleware(
-                SessionStorage::new(
-                 CookieSessionBackend::private(&[0; 32])
-                    .secure(false)
-                )
-            )
-            .resource("/", |r| {
-                r.with(home::index)
+            .middleware(session_storage)
+            .resource("/", |r| r.with(home::index))
+            .resource("/login", |r| {
+                r.method(Method::GET).with(sessions::login_form);
+                r.method(Method::POST).with(sessions::login)
             })
             // .resource("/brands", |r| r.f(brands::index))
             // .resource("/cameras", |r| {
@@ -105,11 +108,6 @@ fn main() {
             //     })
             //     .resource("/new", |r| r.f(rolls::new))
             // })
-            .resource("/login", |r| {
-                // r.method(Method::GET).with(sessions::login_form);
-                // r.method(Method::POST).with(sessions::login)
-                r.method(Method::GET).with(sessions::login_form)
-            })
             // .resource("/logout", |r| {
             //     r.method(Method::DELETE).f(sessions::logout)
             // })

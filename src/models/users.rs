@@ -49,7 +49,7 @@ impl FromRequest<AppState> for CurrentUser {
     type Result = Result<CurrentUser, ::actix_web::Error>;
 
     fn from_request(request: &HttpRequest<AppState>, _: &Self::Config) -> Self::Result {
-        use schema::users::table as users;
+        // use schema::users::table as users;
 
         match request.cookie("user_id") {
             Some(user_id_cookie) => {
