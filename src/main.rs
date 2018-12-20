@@ -1,4 +1,16 @@
 #![allow(proc_macro_derive_resolution_fallback)]
+#![warn(
+    box_pointers,
+    // future_incompatible,
+    missing_copy_implementations,
+    // rust_2018_idioms,
+    nonstandard_style,
+    trivial_casts,
+    trivial_numeric_casts,
+    unused_qualifications,
+    unused_extern_crates,
+    variant_size_differences
+)]
 
 extern crate actix;
 extern crate actix_web;
@@ -18,7 +30,7 @@ extern crate uuid;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-extern crate serde_json;
+// extern crate serde_json;
 
 mod db_conn;
 mod flash_message;
