@@ -150,7 +150,7 @@ fn main() {
             // })
     })
     .bind(SERVER_ADDRESS)
-    .expect(&format!("Cannot bind to {}", SERVER_ADDRESS))
+    .unwrap_or_else(|_| panic!("Cannot bind to {}", SERVER_ADDRESS))
     .start();
 
     println!("Started http server: {}", SERVER_ADDRESS);
@@ -170,9 +170,8 @@ fn setup_db_pool() -> r2d2::Pool<ConnectionManager<PgConnection>> {
 
     // Start 3 db executor actors
     let manager = ConnectionManager::<PgConnection>::new(database_url);
-    let pool = r2d2::Pool::builder()
-        .build(manager)
-        .expect("Failed to create pool.");
 
-    pool
+    r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.")
 }

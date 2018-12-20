@@ -9,9 +9,7 @@ pub struct FlashContext {
 
 impl FlashContext {
     pub fn new(flash_message: FlashMessage) -> Self {
-        FlashContext {
-            flash_message: flash_message,
-        }
+        FlashContext { flash_message }
     }
 
     fn css_class(&self) -> &str {
