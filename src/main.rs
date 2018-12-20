@@ -72,6 +72,7 @@ fn main() {
         App::with_state(state)
             .middleware(middleware::Logger::default())
             .middleware(session_storage)
+            .handler("/assets", actix_web::fs::StaticFiles::new("./assets").unwrap())
             .resource("/", |r| r.with(home::index))
             .resource("/login", |r| {
                 r.method(Method::GET).with(sessions::login_form);

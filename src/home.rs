@@ -1,9 +1,7 @@
 use actix_web::{HttpRequest, HttpResponse, Result as ActixResult, error::ErrorInternalServerError};
-use actix_web::fs::NamedFile;
 use app_state::AppState;
 use super::template_contexts::EmptyResourceContext;
 use models::users::CurrentUser;
-use std::path::{Path, PathBuf};
 
 pub(crate) fn index((req, current_user): (HttpRequest<AppState>, Option<CurrentUser>)) -> ActixResult<HttpResponse> {
     let render_result = match current_user {
@@ -28,8 +26,4 @@ pub(crate) fn index((req, current_user): (HttpRequest<AppState>, Option<CurrentU
         })?;
 
     Ok(HttpResponse::Ok().body(&body))
-}
-
-pub(crate) fn files(file: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new("assets/").join(file)).ok()
 }
