@@ -1,5 +1,7 @@
-use actix_web::{HttpRequest, HttpResponse, Form, Result as ActixResult, error::ErrorInternalServerError};
 use actix_web::middleware::session::RequestSession;
+use actix_web::{
+    error::ErrorInternalServerError, Form, HttpRequest, HttpResponse, Result as ActixResult,
+};
 use app_state::AppState;
 use flash_message::{self, FlashMessage};
 use futures::Future;
@@ -11,9 +13,9 @@ use models::users::LoginUser;
 // use rocket::request::{FlashMessage, Form};
 // use rocket::response::{Flash, Redirect};
 // use schema::users::table as users;
-use route_helpers;
 use super::template_contexts::{EmptyResourceContext, FlashContext};
 use flash_message::get_flash;
+use route_helpers;
 
 pub(crate) fn login_form(req: HttpRequest<AppState>) -> ActixResult<HttpResponse> {
     let render_result = match get_flash(&req)? {
@@ -25,23 +27,26 @@ pub(crate) fn login_form(req: HttpRequest<AppState>) -> ActixResult<HttpResponse
 
             req.state().template.render("sessions/form", &context)
         }
-        None => req.state().template.render("sessions/form", &())
+        None => req.state().template.render("sessions/form", &()),
     };
 
-    let body = render_result
-        .map_err(|e| {
-            debug!("Failed to render template: {}", e.to_string());
-            ErrorInternalServerError(e)
-        })?;
+    let body = render_result.map_err(|e| {
+        debug!("Failed to render template: {}", e.to_string());
+        ErrorInternalServerError(e)
+    })?;
 
     Ok(HttpResponse::Ok().body(&body))
 }
 
-pub(crate) fn login((req, form): (HttpRequest<AppState>, Form<LoginUser>)) -> ActixResult<HttpResponse> {
+pub(crate) fn login(
+    (req, form): (HttpRequest<AppState>, Form<LoginUser>),
+) -> ActixResult<HttpResponse> {
     let user_result = req
         .state()
         .db
-        .send(GetLoginUser { email: form.email.clone() })
+        .send(GetLoginUser {
+            email: form.email.clone(),
+        })
         .wait()?;
 
     match user_result {
@@ -56,8 +61,8 @@ pub(crate) fn login((req, form): (HttpRequest<AppState>, Form<LoginUser>)) -> Ac
                 flash_message::set_flash(&req, message);
                 Ok(route_helpers::redirect_to("/login"))
             }
-        },
-        Err(e) => Ok(e.into())
+        }
+        Err(e) => Ok(e.into()),
     }
 }
 

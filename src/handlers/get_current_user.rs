@@ -1,5 +1,5 @@
-use actix_web::error::ErrorUnauthorized;
 use actix::prelude::*;
+use actix_web::error::ErrorUnauthorized;
 use actix_web::*;
 use db_conn::DbExecutor;
 use diesel::prelude::*;
@@ -39,4 +39,3 @@ impl Handler<GetCurrentUser> for DbExecutor {
         }
     }
 }
-

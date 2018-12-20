@@ -1,5 +1,5 @@
-use actix_web::error::ErrorUnauthorized;
 use actix::prelude::*;
+use actix_web::error::ErrorUnauthorized;
 use actix_web::*;
 use db_conn::DbExecutor;
 use diesel::prelude::*;
@@ -17,8 +17,8 @@ impl Handler<GetLoginUser> for DbExecutor {
     type Result = Result<User, Error>;
 
     fn handle(&mut self, msg: GetLoginUser, _: &mut Self::Context) -> Self::Result {
-        use schema::users::table as users;
         use schema::users::dsl::email;
+        use schema::users::table as users;
 
         let conn: &PgConnection = &self.0.get().unwrap();
 

@@ -1,4 +1,4 @@
-use actix_web::{FromRequest, HttpRequest, error::ErrorUnauthorized};
+use actix_web::{error::ErrorUnauthorized, FromRequest, HttpRequest};
 use app_state::AppState;
 use chrono::offset::Utc;
 use chrono::DateTime;

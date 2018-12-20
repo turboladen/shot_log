@@ -45,8 +45,8 @@ mod route_helpers;
 mod users;
 
 use actix::prelude::*;
+use actix_web::middleware::session::{CookieSessionBackend, SessionStorage};
 use actix_web::{http::Method, middleware, server, App};
-use actix_web::middleware::session::{SessionStorage, CookieSessionBackend};
 use db_conn::DbExecutor;
 use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
@@ -64,15 +64,16 @@ fn main() {
     server::new(move || {
         let state = app_state::AppState::new(addr.clone());
 
-        let session_storage = SessionStorage::new(
-            CookieSessionBackend::private(&[0; 32])
-            .secure(false)
-        );
+        let session_storage =
+            SessionStorage::new(CookieSessionBackend::private(&[0; 32]).secure(false));
 
         App::with_state(state)
             .middleware(middleware::Logger::default())
             .middleware(session_storage)
-            .handler("/assets", actix_web::fs::StaticFiles::new("./assets").unwrap())
+            .handler(
+                "/assets",
+                actix_web::fs::StaticFiles::new("./assets").unwrap(),
+            )
             .resource("/", |r| r.with(home::index))
             .resource("/login", |r| {
                 r.method(Method::GET).with(sessions::login_form);
@@ -148,9 +149,9 @@ fn main() {
             //         })
             // })
     })
-        .bind(SERVER_ADDRESS)
-        .expect(&format!("Cannot bind to {}", SERVER_ADDRESS))
-        .start();
+    .bind(SERVER_ADDRESS)
+    .expect(&format!("Cannot bind to {}", SERVER_ADDRESS))
+    .start();
 
     println!("Started http server: {}", SERVER_ADDRESS);
     let _ = sys.run();

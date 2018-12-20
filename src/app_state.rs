@@ -18,7 +18,9 @@ impl AppState {
 
 fn register_handlebars() -> Handlebars {
     let mut handlebars = Handlebars::new();
-    handlebars.register_templates_directory(".html.hbs", "./templates/").unwrap();
+    handlebars
+        .register_templates_directory(".html.hbs", "./templates/")
+        .unwrap();
     debug!("TEMPLATES: {:#?}", handlebars.get_templates().keys());
 
     handlebars
