@@ -1,9 +1,9 @@
 use actix::prelude::*;
 use actix_web::error::ErrorUnauthorized;
 use actix_web::*;
-use db_conn::DbExecutor;
+use crate::db_conn::DbExecutor;
 use diesel::prelude::*;
-use models::users::{CurrentUser, User};
+use crate::models::users::{CurrentUser, User};
 use uuid::Uuid;
 
 /// This is only message that this actor can handle, but it is easy to extend
@@ -21,7 +21,7 @@ impl Handler<GetCurrentUser> for DbExecutor {
 
     fn handle(&mut self, msg: GetCurrentUser, _: &mut Self::Context) -> Self::Result {
         // use schema::users::dsl::*;
-        use schema::users::table as users;
+        use crate::schema::users::table as users;
 
         let conn: &PgConnection = &self.0.get().unwrap();
 

@@ -1,5 +1,5 @@
 use super::models::users::CurrentUser;
-use flash_message::FlashMessage;
+use crate::flash_message::FlashMessage;
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 use std::hash::{Hash, Hasher};
 

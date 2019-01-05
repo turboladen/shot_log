@@ -2,8 +2,8 @@ use super::template_contexts::EmptyResourceContext;
 use actix_web::{
     error::ErrorInternalServerError, HttpRequest, HttpResponse, Result as ActixResult,
 };
-use app_state::AppState;
-use models::users::CurrentUser;
+use crate::app_state::AppState;
+use crate::models::users::CurrentUser;
 
 pub(crate) fn index(
     (req, current_user): (HttpRequest<AppState>, Option<CurrentUser>),
