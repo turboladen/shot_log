@@ -54,8 +54,11 @@ pub(crate) fn login(
             let hashed_password = crate::users::password_to_hash(&form.password);
 
             if user.password_hash == hashed_password {
-                req.session().set("user_id", user.id.to_string())?;
-                Ok(route_helpers::redirect_to("/user_cameras"))
+                match req.session().set("user_id", user.id) {
+                    // Ok(_r) => Ok(route_helpers::redirect_to("/user_cameras"))
+                    Ok(_r) => Ok(route_helpers::redirect_to("/brands")),
+                    Err(e) => panic!(e),
+                }
             } else {
                 let message = FlashMessage::error("Invalid password");
                 flash_message::set_flash(&req, message)?;

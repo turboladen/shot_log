@@ -1,4 +1,5 @@
 use actix_web::{error::ErrorUnauthorized, FromRequest, HttpRequest};
+use actix_web::middleware::session::RequestSession;
 use crate::app_state::AppState;
 use chrono::offset::Utc;
 use chrono::DateTime;
@@ -49,25 +50,23 @@ impl FromRequest<AppState> for CurrentUser {
     type Result = Result<CurrentUser, ::actix_web::Error>;
 
     fn from_request(request: &HttpRequest<AppState>, _: &Self::Config) -> Self::Result {
-        // use schema::users::table as users;
-
-        match request.cookie("user_id") {
-            Some(user_id_cookie) => {
-                let user_id = match Uuid::parse_str(user_id_cookie.value()) {
-                    Ok(id) => id,
-                    Err(_) => return Err(ErrorUnauthorized("sup")),
-                };
-
-                // TODO: don't wait!
-                request
-                    .state()
-                    .db
-                    .send(GetCurrentUser { id: user_id })
-                    .wait()?
+        match request.session().get::<Uuid>("user_id") {
+            Ok(user_id_cookie) => {
+                match user_id_cookie {
+                    Some(user_id) => {
+                        // TODO: don't wait!
+                        request
+                            .state()
+                            .db
+                            .send(GetCurrentUser { id: user_id })
+                            .wait()?
+                    }
+                    None => Err(ErrorUnauthorized("No user found in session... er something")),
+                }
             }
-            None => {
+            Err(e) => {
                 info!("No cookie in cookies");
-                Err(ErrorUnauthorized("sup"))
+                Err(ErrorUnauthorized(e))
             }
         }
     }
