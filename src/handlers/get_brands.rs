@@ -19,6 +19,6 @@ impl Handler<GetBrands> for DbExecutor {
 
         let conn: &PgConnection = &self.0.get().unwrap();
 
-        brands.load(&*conn).map_err(|e| ErrorInternalServerError(e))
+        brands.load(&*conn).map_err(ErrorInternalServerError)
     }
 }
