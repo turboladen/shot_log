@@ -1,11 +1,11 @@
+use crate::app_state::AppState;
+use crate::flash_message::{self, FlashMessage};
+use crate::handlers::GetLoginUser;
 use actix_web::middleware::session::RequestSession;
 use actix_web::{
     error::ErrorInternalServerError, Form, HttpRequest, HttpResponse, Result as ActixResult,
 };
-use crate::app_state::AppState;
-use crate::flash_message::{self, FlashMessage};
 use futures::Future;
-use crate::handlers::GetLoginUser;
 // use diesel::*;
 // use models::users::{CurrentUser, LoginUser, User};
 use crate::models::users::LoginUser;
@@ -118,15 +118,15 @@ mod tests {
 
     //     assert_eq!(response.status(), Status::SeeOther);
 
-        // let new_location = response.headers()
-        //     .get_one("Location")
-        //     .expect("No Location header found");
+    // let new_location = response.headers()
+    //     .get_one("Location")
+    //     .expect("No Location header found");
 
-        // let mut response = client.get(new_location).dispatch();
-        // let response_body = response.body_string().unwrap();
-        // println!("response body: {}", &response_body);
+    // let mut response = client.get(new_location).dispatch();
+    // let response_body = response.body_string().unwrap();
+    // println!("response body: {}", &response_body);
 
-        // assert!(&response_body.contains("Invalid password"));
+    // assert!(&response_body.contains("Invalid password"));
     // }
 
     // TODO: Following the Location URL doesn't result in the flash
@@ -145,14 +145,14 @@ mod tests {
 
     //     assert_eq!(response.status(), Status::SeeOther);
 
-        // let new_location = response.headers()
-        //     .get_one("Location")
-        //     .expect("No Location header found");
+    // let new_location = response.headers()
+    //     .get_one("Location")
+    //     .expect("No Location header found");
 
-        // let mut response = client.get(new_location).dispatch();
-        // let response_body = response.body_string().unwrap();
-        // println!("response body: {}", &response_body);
+    // let mut response = client.get(new_location).dispatch();
+    // let response_body = response.body_string().unwrap();
+    // println!("response body: {}", &response_body);
 
-        // assert!(&response_body.contains("Invalid password"));
+    // assert!(&response_body.contains("Invalid password"));
     // }
 }

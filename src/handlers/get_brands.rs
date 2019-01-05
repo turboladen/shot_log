@@ -1,8 +1,8 @@
-use ::actix::prelude::*;
-use ::actix_web::*;
-use ::actix_web::error::ErrorInternalServerError;
 use crate::db_conn::DbExecutor;
 use crate::models::brands::Brand;
+use ::actix::prelude::*;
+use ::actix_web::error::ErrorInternalServerError;
+use ::actix_web::*;
 use diesel::prelude::*;
 
 pub(crate) struct GetBrands;
@@ -19,7 +19,6 @@ impl Handler<GetBrands> for DbExecutor {
 
         let conn: &PgConnection = &self.0.get().unwrap();
 
-        brands.load(&*conn)
-            .map_err(|e| ErrorInternalServerError(e))
+        brands.load(&*conn).map_err(|e| ErrorInternalServerError(e))
     }
 }

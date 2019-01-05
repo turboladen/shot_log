@@ -1,5 +1,5 @@
-use actix::prelude::*;
 use crate::db_conn::DbExecutor;
+use actix::prelude::*;
 use handlebars::Handlebars;
 
 pub(crate) struct AppState {

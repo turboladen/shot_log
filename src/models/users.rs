@@ -1,11 +1,11 @@
-use actix_web::{error::ErrorUnauthorized, FromRequest, HttpRequest};
-use actix_web::middleware::session::RequestSession;
 use crate::app_state::AppState;
+use crate::handlers::GetCurrentUser;
+use actix_web::middleware::session::RequestSession;
+use actix_web::{error::ErrorUnauthorized, FromRequest, HttpRequest};
 use chrono::offset::Utc;
 use chrono::DateTime;
 use diesel::*;
 use futures::Future;
-use crate::handlers::GetCurrentUser;
 // use models::user_cameras::UserCamera;
 use crate::schema::users;
 use uuid::Uuid;
@@ -61,7 +61,9 @@ impl FromRequest<AppState> for CurrentUser {
                             .send(GetCurrentUser { id: user_id })
                             .wait()?
                     }
-                    None => Err(ErrorUnauthorized("No user found in session... er something")),
+                    None => Err(ErrorUnauthorized(
+                        "No user found in session... er something",
+                    )),
                 }
             }
             Err(e) => {

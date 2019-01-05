@@ -43,10 +43,10 @@ mod sessions;
 mod route_helpers;
 mod users;
 
+use crate::db_conn::DbExecutor;
 use actix::prelude::*;
 use actix_web::middleware::session::{CookieSessionBackend, SessionStorage};
 use actix_web::{http::Method, middleware, server, App};
-use crate::db_conn::DbExecutor;
 use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
 use std::env;
@@ -79,74 +79,74 @@ fn main() {
                 r.method(Method::POST).with(sessions::login)
             })
             .resource("/brands", |r| r.method(Method::GET).with(brands::index))
-            // .resource("/cameras", |r| {
-            //     r.route()
-            //         .filter(pred::Header("accept", "application/json"))
-            //         .f(cameras::drop_down);
+        // .resource("/cameras", |r| {
+        //     r.route()
+        //         .filter(pred::Header("accept", "application/json"))
+        //         .f(cameras::drop_down);
 
-            //     r.f(cameras::index)
-            // })
-            // .resource("/film_formats", |r| r.f(film_formats::index))
-            // .resource("/film_stocks", |r| {
-            //     r.route()
-            //         .filter(pred::Header("accept", "application/json"))
-            //         .f(film_stocks::drop_down);
+        //     r.f(cameras::index)
+        // })
+        // .resource("/film_formats", |r| r.f(film_formats::index))
+        // .resource("/film_stocks", |r| {
+        //     r.route()
+        //         .filter(pred::Header("accept", "application/json"))
+        //         .f(film_stocks::drop_down);
 
-            //     r.f(film_stocks::index)
-            // })
-            // .resource("/lenses", |r| {
-            //     r.route()
-            //         .filter(pred::Header("accept", "application/json"))
-            //         .method(Method::GET)
-            //         .f(lenses::drop_down);
+        //     r.f(film_stocks::index)
+        // })
+        // .resource("/lenses", |r| {
+        //     r.route()
+        //         .filter(pred::Header("accept", "application/json"))
+        //         .method(Method::GET)
+        //         .f(lenses::drop_down);
 
-            //     r.f(lenses::index)
-            // })
-            // .scope("/rolls", |rolls_scope| {
-            //     rolls_scope.resource("" , |r| {
-            //         r.method(Method::GET).f(rolls::index);
-            //         r.method(Method::POST).f(rolls::create);
-            //     })
-            //     .resource("/new", |r| r.f(rolls::new))
-            // })
-            // .resource("/logout", |r| {
-            //     r.method(Method::DELETE).f(sessions::logout)
-            // })
-            // .scope("/users", |users_scope| {
-            //     users_scope
-            //         .resource("", |r| r.method(Method::POST).f(users::create))
-            //         .resource("/new", |r| r.method(Method::GET).f(users::new))
-            // })
-            // .scope("/user_cameras", |user_cameras_scope| {
-            //     user_cameras_scope
-            //         .resource("", |r| {
-            //             r.route()
-            //                 .filter(pred::Header("accept", "application/json"))
-            //                 .method(Method::GET)
-            //                 .f(user_cameras::drop_down);
-            //             r.method(Method::GET).f(user_cameras::index);
-            //             r.method(Method::POST).f(user_cameras::create);
-            //         })
-            //         .resource("/new", |r| {
-            //             r.method(Method::GET).f(user_cameras::new);
-            //         })
-            //         .resource("/{user_camera_id}", |r| {
-            //             r.method(Method::DELETE).f(user_cameras::destroy)
-            //         })
-            // })
-            // .scope("/user_lenses", |user_lenses_scope| {
-            //     user_lenses_scope
-            //         .resource("", |r| {
-            //             r.method(Method::GET).f(user_lenses::index);
-            //             r.method(Method::POST).f(user_lenses::create);
-            //         })
-            //         .resource("/new", |r| {
-            //             r.method(Method::GET).f(user_lenses::new);
-            //         })
-            //         .resource("/{user_lens_id}", |r| {
-            //             r.method(Method::DELETE).f(user_lenses::destroy)
-            //         })
-            // })
+        //     r.f(lenses::index)
+        // })
+        // .scope("/rolls", |rolls_scope| {
+        //     rolls_scope.resource("" , |r| {
+        //         r.method(Method::GET).f(rolls::index);
+        //         r.method(Method::POST).f(rolls::create);
+        //     })
+        //     .resource("/new", |r| r.f(rolls::new))
+        // })
+        // .resource("/logout", |r| {
+        //     r.method(Method::DELETE).f(sessions::logout)
+        // })
+        // .scope("/users", |users_scope| {
+        //     users_scope
+        //         .resource("", |r| r.method(Method::POST).f(users::create))
+        //         .resource("/new", |r| r.method(Method::GET).f(users::new))
+        // })
+        // .scope("/user_cameras", |user_cameras_scope| {
+        //     user_cameras_scope
+        //         .resource("", |r| {
+        //             r.route()
+        //                 .filter(pred::Header("accept", "application/json"))
+        //                 .method(Method::GET)
+        //                 .f(user_cameras::drop_down);
+        //             r.method(Method::GET).f(user_cameras::index);
+        //             r.method(Method::POST).f(user_cameras::create);
+        //         })
+        //         .resource("/new", |r| {
+        //             r.method(Method::GET).f(user_cameras::new);
+        //         })
+        //         .resource("/{user_camera_id}", |r| {
+        //             r.method(Method::DELETE).f(user_cameras::destroy)
+        //         })
+        // })
+        // .scope("/user_lenses", |user_lenses_scope| {
+        //     user_lenses_scope
+        //         .resource("", |r| {
+        //             r.method(Method::GET).f(user_lenses::index);
+        //             r.method(Method::POST).f(user_lenses::create);
+        //         })
+        //         .resource("/new", |r| {
+        //             r.method(Method::GET).f(user_lenses::new);
+        //         })
+        //         .resource("/{user_lens_id}", |r| {
+        //             r.method(Method::DELETE).f(user_lenses::destroy)
+        //         })
+        // })
     })
     .bind(SERVER_ADDRESS)
     .unwrap_or_else(|_| panic!("Cannot bind to {}", SERVER_ADDRESS))

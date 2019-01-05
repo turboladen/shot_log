@@ -1,18 +1,16 @@
 use super::template_contexts::ListResourcesContext;
-use actix_web::{
-    HttpRequest, HttpResponse, Result as ActixResult, error::ErrorInternalServerError,
-};
-use futures::Future;
 use crate::app_state::AppState;
 use crate::handlers::GetBrands;
 use crate::models::users::CurrentUser;
+use actix_web::{
+    error::ErrorInternalServerError, HttpRequest, HttpResponse, Result as ActixResult,
+};
+use futures::Future;
 
-pub(crate) fn index((req, current_user): (HttpRequest<AppState>, CurrentUser)) -> ActixResult<HttpResponse> {
-    let brands = req
-        .state()
-        .db
-        .send(GetBrands)
-        .wait()??;
+pub(crate) fn index(
+    (req, current_user): (HttpRequest<AppState>, CurrentUser),
+) -> ActixResult<HttpResponse> {
+    let brands = req.state().db.send(GetBrands).wait()??;
 
     let context = ListResourcesContext {
         current_user: Some(current_user),

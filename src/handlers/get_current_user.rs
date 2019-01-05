@@ -1,8 +1,8 @@
+use crate::db_conn::DbExecutor;
+use crate::models::users::{CurrentUser, User};
 use ::actix::prelude::*;
 use ::actix_web::error::ErrorUnauthorized;
 use ::actix_web::*;
-use crate::db_conn::DbExecutor;
-use crate::models::users::{CurrentUser, User};
 use diesel::prelude::*;
 use uuid::Uuid;
 

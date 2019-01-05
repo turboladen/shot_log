@@ -1,6 +1,6 @@
+use crate::schema::brands;
 use chrono::offset::Utc;
 use chrono::DateTime;
-use crate::schema::brands;
 use uuid::Uuid;
 
 #[derive(Associations, Identifiable, Queryable, Serialize)]

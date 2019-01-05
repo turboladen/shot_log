@@ -1,9 +1,9 @@
+use crate::db_conn::DbExecutor;
+use crate::models::users::User;
 use ::actix::prelude::*;
 use ::actix_web::error::ErrorUnauthorized;
 use ::actix_web::*;
-use crate::db_conn::DbExecutor;
 use diesel::prelude::*;
-use crate::models::users::User;
 
 pub struct GetLoginUser {
     pub email: String,
