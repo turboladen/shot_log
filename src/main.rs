@@ -43,22 +43,15 @@ mod sessions;
 mod route_helpers;
 mod users;
 
-use crate::db_conn::DbExecutor;
-use actix::prelude::*;
 use actix_web::middleware::session::{CookieSessionBackend, SessionStorage};
 use actix_web::{http::Method, middleware, server, App};
-use diesel::prelude::*;
-use diesel::r2d2::ConnectionManager;
-use std::env;
 
-const DB_ARBITER_COUNT: usize = 3;
 const SERVER_ADDRESS: &str = "127.0.0.1:8088";
 
 fn main() {
     setup_env();
     let sys = actix::System::new("shot_log");
-    let pool = setup_db_pool();
-    let addr = SyncArbiter::start(DB_ARBITER_COUNT, move || DbExecutor(pool.clone()));
+    let addr = crate::app_state::build_initial_addr();
 
     server::new(move || {
         let state = app_state::AppState::new(addr.clone());
@@ -162,15 +155,4 @@ fn setup_env() {
         panic!("Unable to init logging");
     }
     dotenv::dotenv().ok();
-}
-
-fn setup_db_pool() -> r2d2::Pool<ConnectionManager<PgConnection>> {
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-
-    // Start 3 db executor actors
-    let manager = ConnectionManager::<PgConnection>::new(database_url);
-
-    r2d2::Pool::builder()
-        .build(manager)
-        .expect("Failed to create pool.")
 }
