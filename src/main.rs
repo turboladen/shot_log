@@ -3,7 +3,7 @@
     box_pointers,
     // future_incompatible,
     missing_copy_implementations,
-    // rust_2018_idioms,
+    rust_2018_idioms,
     nonstandard_style,
     trivial_casts,
     trivial_numeric_casts,
@@ -12,25 +12,12 @@
     variant_size_differences
 )]
 
-extern crate actix;
-extern crate actix_web;
-extern crate argon2rs;
-extern crate chrono;
-#[macro_use]
-extern crate diesel;
-extern crate dotenv;
-extern crate env_logger;
-extern crate futures;
-extern crate handlebars;
 #[macro_use]
 extern crate log;
-extern crate r2d2;
-extern crate uuid;
-
-extern crate serde;
+#[macro_use]
+extern crate diesel;
 #[macro_use]
 extern crate serde_derive;
-// extern crate serde_json;
 
 mod db_conn;
 mod flash_message;
