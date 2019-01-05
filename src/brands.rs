@@ -1,15 +1,18 @@
 use super::template_contexts::ListResourcesContext;
-use db_conn::DbConn;
-use diesel::RunQueryDsl;
-use models::brands::Brand;
-use models::users::CurrentUser;
-// use rocket_contrib::Template;
-use schema::brands;
+use actix_web::{
+    HttpRequest, HttpResponse, Result as ActixResult, error::ErrorInternalServerError,
+};
+use futures::Future;
+use crate::app_state::AppState;
+use crate::handlers::GetBrands;
+use crate::models::users::CurrentUser;
 
-// #[get("/brands", format = "text/html")]
-pub(crate) fn index(current_user: CurrentUser, conn: DbConn) -> Template {
-    let result = brands::table.load::<Brand>(&*conn);
-    let brands = result.expect("Error loading brands");
+pub(crate) fn index((req, current_user): (HttpRequest<AppState>, CurrentUser)) -> ActixResult<HttpResponse> {
+    let brands = req
+        .state()
+        .db
+        .send(GetBrands)
+        .wait()??;
 
     let context = ListResourcesContext {
         current_user: Some(current_user),
@@ -18,5 +21,12 @@ pub(crate) fn index(current_user: CurrentUser, conn: DbConn) -> Template {
         resources: brands,
     };
 
-    Template::render("brands/index", context)
+    let render_result = req.state().template.render("brands/index", &context);
+
+    let body = render_result.map_err(|e| {
+        debug!("Failed to render template: {}", e.to_string());
+        ErrorInternalServerError(e)
+    })?;
+
+    Ok(HttpResponse::Ok().body(&body))
 }

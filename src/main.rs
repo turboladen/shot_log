@@ -28,7 +28,7 @@ pub(crate) mod models;
 pub(crate) mod schema;
 pub(crate) mod template_contexts;
 
-// mod brands;
+mod brands;
 // mod cameras;
 // mod film_formats;
 // mod film_stocks;
@@ -78,7 +78,7 @@ fn main() {
                 r.method(Method::GET).with(sessions::login_form);
                 r.method(Method::POST).with(sessions::login)
             })
-            // .resource("/brands", |r| r.f(brands::index))
+            .resource("/brands", |r| r.method(Method::GET).with(brands::index))
             // .resource("/cameras", |r| {
             //     r.route()
             //         .filter(pred::Header("accept", "application/json"))

@@ -1,4 +1,4 @@
-// pub mod brands;
+pub mod brands;
 // pub mod cameras;
 // pub mod film_formats;
 // pub mod film_stocks;

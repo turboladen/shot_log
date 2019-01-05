@@ -52,13 +52,13 @@ pub struct EmptyResourceContext {
     pub flash: Option<FlashContext>,
 }
 
-// #[derive(Serialize, Hash)]
-// pub struct ListResourcesContext<'a, T> {
-//     pub current_user: Option<CurrentUser>,
-//     pub flash: Option<FlashContext>,
-//     pub name: &'a str,
-//     pub resources: Vec<T>,
-// }
+#[derive(Serialize, Hash)]
+pub struct ListResourcesContext<'a, T> {
+    pub current_user: Option<CurrentUser>,
+    pub flash: Option<FlashContext>,
+    pub name: &'a str,
+    pub resources: Vec<T>,
+}
 
 // #[derive(Serialize, Hash)]
 // pub struct SingleResourceContext<'a, T> {
