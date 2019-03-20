@@ -1,5 +1,5 @@
-use actix::prelude::*;
 use crate::db_conn::DbExecutor;
+use actix::prelude::*;
 use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
 use handlebars::Handlebars;
@@ -27,7 +27,7 @@ pub(crate) fn build_initial_addr() -> Addr<DbExecutor> {
 }
 
 fn setup_db_pool() -> r2d2::Pool<ConnectionManager<PgConnection>> {
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let database_url = env::var("DATABASE_URL").unwrap_or("postgres://localhost/shot_log".into());
 
     // Start 3 db executor actors
     let manager = ConnectionManager::<PgConnection>::new(database_url);
