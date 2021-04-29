@@ -43,29 +43,34 @@ mod sessions;
 mod route_helpers;
 mod users;
 
-use actix_web::middleware::session::{CookieSessionBackend, SessionStorage};
-use actix_web::{http::Method, middleware, server, App};
+use actix_files::NamedFile;
+use actix_session::{CookieSession};
+use actix_web::{http::Method, middleware, App, HttpServer};
 
 const SERVER_ADDRESS: &str = "127.0.0.1:8088";
 
-fn main() {
+async fn asset(req: HttpRequest) -> Result<NamedFile> {
+    let path: PathBuf = req.match_info().query("filename").parse().unwrap();
+}
+
+#[actix_rt::main]
+async fn main() {
     setup_env();
-    let sys = actix::System::new("shot_log");
     let addr = crate::app_state::build_initial_addr();
 
-    server::new(move || {
+    HttpServer::new(|| {
         let state = app_state::AppState::new(addr.clone());
 
-        let session_storage =
-            SessionStorage::new(CookieSessionBackend::private(&[0; 32]).secure(false));
+        let session_storage = CookieSession::signed(&[0; 32]).secure(false);
 
         App::with_state(state)
             .middleware(middleware::Logger::default())
-            .middleware(session_storage)
-            .handler(
-                "/assets",
-                actix_web::fs::StaticFiles::new("./assets").unwrap(),
-            )
+            // .middleware(session_storage)
+            // .handler(
+            //     "/assets",
+            //     actix_web::fs::StaticFiles::new("./assets").unwrap(),
+            // )
+            .route("/{filename:.*}", web::get().to(asset)))
             .resource("/", |r| r.with(home::index))
             .resource("/login", |r| {
                 r.method(Method::GET).with(sessions::login_form);
@@ -141,12 +146,9 @@ fn main() {
         //         })
         // })
     })
-    .bind(SERVER_ADDRESS)
-    .unwrap_or_else(|_| panic!("Cannot bind to {}", SERVER_ADDRESS))
-    .start();
-
-    println!("Started http server: {}", SERVER_ADDRESS);
-    let _ = sys.run();
+    .bind(SERVER_ADDRESS)?
+        .run()
+        .await
 }
 
 fn setup_env() {

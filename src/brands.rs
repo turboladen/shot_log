@@ -28,3 +28,35 @@ pub(crate) fn index(
 
     Ok(HttpResponse::Ok().body(&body))
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::app_state::AppState;
+    use crate::models::users::CurrentUser;
+    use actix_web::{http, test};
+    use chrono::offset::Utc;
+    use uuid::Uuid;
+
+    #[test]
+    fn meow() {
+        let current_user = CurrentUser {
+            id: Uuid::new_v4(),
+            email: "test@test.com".into(),
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+        };
+        // let code = actix::System::run(|| {
+            let addr = crate::app_state::build_initial_addr();
+            let state = AppState::new(addr.clone());
+            // let response = test::TestRequest::with_state(state)
+            let request = test::TestRequest::default()
+                // .run(&super::index)
+                .finish();
+
+            let response = super::index((request, current_user)).unwrap();
+
+            assert_eq!(response.status(), http::StatusCode::OK);
+        // });
+        // std::process::exit(code);
+    }
+}

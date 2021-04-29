@@ -1,8 +1,7 @@
 use crate::db_conn::DbExecutor;
 use crate::models::brands::Brand;
-use ::actix::prelude::*;
-use ::actix_web::error::ErrorInternalServerError;
-use ::actix_web::*;
+use actix_web::error::ErrorInternalServerError;
+use actix_web::*;
 use diesel::prelude::*;
 
 pub(crate) struct GetBrands;

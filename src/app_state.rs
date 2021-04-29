@@ -1,5 +1,4 @@
 use crate::db_conn::DbExecutor;
-use actix::prelude::*;
 use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
 use handlebars::Handlebars;
@@ -9,7 +8,7 @@ const DB_ARBITER_COUNT: usize = 3;
 
 pub(crate) struct AppState {
     pub(crate) db: Addr<DbExecutor>,
-    pub(crate) template: Handlebars,
+    pub(crate) template: Handlebars<'static>,
 }
 
 impl AppState {
@@ -37,7 +36,7 @@ fn setup_db_pool() -> r2d2::Pool<ConnectionManager<PgConnection>> {
         .expect("Failed to create pool.")
 }
 
-fn register_handlebars() -> Handlebars {
+fn register_handlebars() -> Handlebars<'static> {
     let mut handlebars = Handlebars::new();
     handlebars
         .register_templates_directory(".html.hbs", "./templates/")

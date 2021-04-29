@@ -1,6 +1,6 @@
 use crate::app_state::AppState;
 use crate::handlers::GetCurrentUser;
-use actix_web::middleware::session::RequestSession;
+use actix_session::{CookieSession, Session};
 use actix_web::{error::ErrorUnauthorized, FromRequest, HttpRequest};
 use chrono::offset::Utc;
 use chrono::DateTime;

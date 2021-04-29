@@ -1,9 +1,9 @@
 use crate::app_state::AppState;
 use crate::flash_message::{self, FlashMessage};
 use crate::handlers::GetLoginUser;
-use actix_web::middleware::session::RequestSession;
+use actix_session::{CookieSession, Session};
 use actix_web::{
-    error::ErrorInternalServerError, Form, HttpRequest, HttpResponse, Result as ActixResult,
+    error::ErrorInternalServerError, web::Form, HttpRequest, HttpResponse, Result as ActixResult,
 };
 use futures::Future;
 // use diesel::*;

@@ -1,5 +1,5 @@
+use actix_session::{CookieSession, Session};
 use actix_web::error::Result;
-use actix_web::middleware::session::RequestSession;
 use actix_web::HttpRequest;
 
 const FLASH_KEY: &str = "flash";
